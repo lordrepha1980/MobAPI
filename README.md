@@ -8,8 +8,9 @@ A node.js API
 3. Start server (for dev env `npm run dev`, for prod env `npm run start`)
 
 ## Configuration
-
+Configuration file is config.json in root.
 database init:
+
 `"database": {
     "type": "MongoDB",
     "host": "localhost",
