@@ -5,7 +5,7 @@
         "port": 1337,
         "user": "root",
         "password": "",
-        "name": "test"
+        "name": "MobAPI"
     },
     "noDatabase": false
 }

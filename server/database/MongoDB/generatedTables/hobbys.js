@@ -1,20 +1,50 @@
 "use strict"
+const _dirname  = process.cwd()
+
+const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
 class hobbys extends Data { 
-    constructor() {
-        super();
-    }
 
+    
+        constructor() {
+            super();
+        }
     
 
     
     
-    *update() {
-        console.log('coool')
-    }
+    
+        async update( ctx ) {
+            
 
-    *find() {
-        console.log('coool')
-    }
+            await super.update( ctx )
+
+            
+        }
+    
+
+    
+        async findOne( ctx ) {
+            
+
+            const result = await super.findOne( ctx )
+
+            
+            return result
+        }
+    
+
+    
+        async find( ctx ) {
+            
+
+            const result = await super.find( ctx )
+
+            
+            return result
+        }
+    
 
 }
+
+module.exports = hobbys;

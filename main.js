@@ -6,23 +6,13 @@ const fs                    = require('fs');
 const Nunjucks              = require("nunjucks");   
 
 const main = {
-    initDatabase: async function() { 
+    initDatabase: async () =>{ 
         console.log('init Database: ', dbType);
 
         if ( dbType === 'MongoDB' ) {
-            console.log('start Init Database');
-            const { MongoClient }   = require('mongodb');
-            const url               = `mongodb://${config.database.host}:${config.database.port}`;
-            const client            = new MongoClient(url);
-
-            // Database Name
-            const dbName            = config.database.name || 'defaultDb';
-
-            await client.connect();
-            console.log('Connected successfully to server');
-            const db                = client.db(dbName);
-            const collection        = db.collection('documents');
-        }
+            const Connection        = require('./server/database/MongoDB/Connection.js');
+            let connection          = new Connection();
+            const db                = await connection.init();        }
     },
     generateTables: function() {
         for( const [ key, item ] of Object.entries(tables) ) { 
@@ -34,7 +24,7 @@ const main = {
                 Template                = `./server/custom/${key}.js`;
 
             console.log('render Template: ', Template); 
-            const template              = Nunjucks.render(Template, {table: key, database: dbType});
+            const template              = Nunjucks.render(Template, { table: key, database: dbType });
             //write templates
             fs.writeFile(`./server/database/${dbType}/generatedTables/${key}.js`, template, err => {
                 if (err) {
