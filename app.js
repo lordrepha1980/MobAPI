@@ -1,19 +1,34 @@
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
+const Koa               = require("koa");
+const Router            = require('@koa/router');
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const path              = require("path");
+const cookieParser      = require("cookie-parser");
+const logger            = require("morgan");
 
-const app = express();
+const dataRouter        = require("./routes/data");
+const customRouter      = require("./routes/custom");
 
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+const app               = new Koa();
+const router            = new Router();
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+/* GET users listing. */
+router.get("/", (ctx, next) => {
+    console.log('get data')
+  ctx.body = "Root API";
+});
+
+router
+    .get("/data", (ctx, next) => {
+        ctx.body = "Data API"
+    })
+
+router
+    .get("/custom", (ctx, next) => {
+        ctx.body  = "Custom API";
+    });
+
+app
+  .use(router.routes())
+  .use(router.allowedMethods())
 
 module.exports = app;

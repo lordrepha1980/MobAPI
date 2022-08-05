@@ -3,9 +3,9 @@ const Router    = require('@koa/router');
 
 const router    = new Router();
 
-/* GET home page. */
+/* GET users listing. */
 router.get("/", function (req, res, next) {
-  res.send("Hello World!");
+  res.send("Custom API");
 });
 
 module.exports = router;
