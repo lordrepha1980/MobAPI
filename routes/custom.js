@@ -8,6 +8,8 @@ const router    = new Router({
 /* GET users listing. */
 router
     .get("/:action", (ctx, next) => {
+        // check user login
+        
         ctx.body = "Custom API"
     })
 

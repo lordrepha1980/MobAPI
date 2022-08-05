@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "./server/database/MongoDB/generatedTables/*",
+        "./server/database/sqlite/generatedTables/*"
+    ]
+}

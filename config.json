@@ -1,0 +1,11 @@
+{
+    "database": {
+        "type": "MongoDB",
+        "host": "localhost",
+        "port": 1337,
+        "user": "root",
+        "password": "",
+        "name": "test"
+    },
+    "noDatabase": false
+}
