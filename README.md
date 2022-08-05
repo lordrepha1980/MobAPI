@@ -32,5 +32,25 @@ server/custom/tableName.js CUSTOMTEMPLATE, with CUSTOMTEMPLATE are possible exte
 
 ## Hooks
 Possible Hooks in CUSTOMTEMPLATE
+- updateBefore / updateAfter
+- findBefore / findAfter
+- findOneBefore / findOneAfter
 
+Hook example
 `{% block updateBefore %}{% endblock %}`
+
+##API Calls
+Possible API Calls
+
+#get
+    find 
+    findOne
+
+Example:
+    get first item from database with id = '1'
+    'https://url/findOne?_id=1'
+
+    get alls item from database with group = 'foo'
+    'https://url/find?group=foo'
+
+

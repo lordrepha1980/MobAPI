@@ -10,8 +10,6 @@ class {{ table }} extends Data {
             super();
         }
     {% endblock %}
-
-    {% block createDB %}{% endblock %}
     
     {% block methodeUpdate %}
         async update( ctx ) {
