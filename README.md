@@ -10,7 +10,7 @@ A node.js API
 ## Configuration
 Configuration file is config.json in root.
 
-database init:
+### database init:
 
 `"database": {
     "type": "MongoDB",
@@ -36,21 +36,21 @@ Possible Hooks in CUSTOMTEMPLATE
 - findBefore / findAfter
 - findOneBefore / findOneAfter
 
-Hook example
+### Hook example
 `{% block updateBefore %}{% endblock %}`
 
-##API Calls
+## API Calls
 Possible API Calls
 
-#get
+### get
     find 
     findOne
 
-Example:
+### Example:
     get first item from database with id = '1'
-    'https://url/findOne?_id=1'
+    `https://url/findOne?_id=1`
 
     get alls item from database with group = 'foo'
-    'https://url/find?group=foo'
+    `https://url/find?group=foo`
 
 
