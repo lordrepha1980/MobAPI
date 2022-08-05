@@ -9,6 +9,7 @@ A node.js API
 
 ## Configuration
 Configuration file is config.json in root.
+
 database init:
 
 `"database": {
