@@ -10,5 +10,8 @@ router
     .get("/:table", (ctx, next) => {
         ctx.body = "Data API"
     })
+    .post("/:table", (ctx, next) => {
+        ctx.body = "Data API"
+    })
 
 module.exports = router;
