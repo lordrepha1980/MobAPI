@@ -60,6 +60,7 @@ Possible hooks in CUSTOMTEMPLATE
 - updateBefore / updateAfter
 - findBefore / findAfter
 - findOneBefore / findOneAfter
+- deleteBefore / deleteAfter
 - countBefore / countAfter
 
 Possible methodes in CUSTOMTEMPLATE
@@ -67,6 +68,7 @@ Possible methodes in CUSTOMTEMPLATE
 - methodeUpdate
 - methodeFindeOne
 - methodeFind
+- methodeDelete
 - methodeCount
 
 ### Hook example
@@ -75,16 +77,57 @@ Possible methodes in CUSTOMTEMPLATE
 ## API Calls
 Possible API Calls
 
-### get
+## get
     find 
     findOne
     count
-
+    
 ### Example:
     get first item from database with id = '1'
-    `https://url/findOne?_id=1`
+    `https://url/data/:table/findOne?_id=1`
 
     get alls item from database with group = 'foo'
-    `https://url/find?group=foo`
+    `https://url/data/:table/find?group=foo`
+    
+:table i the endpoint from the API normally Databasetable
+    
+## post
+    find 
+    findOne
+    delete
+    update
+    count
+    
+### Parameter
+    {
+        table
+        query
+        body
+        actions
+    }
+    
+- table:    (String) Databasetable
+- query:    (Object) Select data from DB
+- body:     For Update new updated item
+- actions:  Hook for custom actions
+    
+### Example:
+    get first item from database with _id = '1'
+    `https://url/data/:table/findOne`
+    {
+        "query": {
+            "_id": "1"
+        }
+    }
+
+    get alls item from database with group = 'foo'
+    `https://url/data/:table/find`
+    {
+        "query": {
+            "group": "foo"
+    }
+
+:table i the endpoint from the API normally Databasetable
+
 
 
