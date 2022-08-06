@@ -77,7 +77,7 @@ Possible methodes in CUSTOMTEMPLATE
 ### items in Hook
 available item in Hook are:
     - result:   result from the database
-    - request:  request from the client
+    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.md#parameter)
 
 ## API Calls
 Possible API Calls
@@ -103,7 +103,7 @@ Possible API Calls
     update
     count
     
-### [Parameter]
+### Parameter
     {
         table
         query
