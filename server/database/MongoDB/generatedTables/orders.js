@@ -3,6 +3,9 @@ const _dirname  = process.cwd()
 
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
+    const User = require( _dirname + "/server/database/MongoDB/generatedTables/user.js" )
+
+
 class orders extends Data { 
 
     
@@ -10,24 +13,35 @@ class orders extends Data {
             super();
         }
     
+    
+    
+        async update( request ) {
+            
+    const user = new User();
+    if ( !request.body )
+        request.body = {}
+    
+    const usr = await user.findOne({ table: 'user', query: { _id: '1'} })
 
-    
-    
-    
-        async update( ctx ) {
+    if ( usr )
+        request.body.user = usr
+    else
+        request.body.user = 'No user found'
+
+
+            const result = await super.update( request )
             
 
-            await super.update( ctx )
-
+            return result
             
         }
     
 
     
-        async findOne( ctx ) {
+        async findOne( request ) {
             
 
-            const result = await super.findOne( ctx )
+            const result = await super.findOne( request )
 
             
             return result
@@ -35,10 +49,32 @@ class orders extends Data {
     
 
     
-        async find( ctx ) {
+        async find( request ) {
             
 
-            const result = await super.find( ctx )
+            const result = await super.find( request )
+
+            
+            return result
+        }
+    
+
+    
+        async delete( request ) {
+            
+
+            const result = await super.delete( request )
+
+            
+            return result
+        }
+    
+
+    
+        async count( request ) {
+            
+
+            const result = await super.count( request )
 
             
             return result

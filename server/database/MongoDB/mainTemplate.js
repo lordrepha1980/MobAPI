@@ -2,6 +2,7 @@
 const _dirname  = process.cwd()
 
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
+{% block main %}{% endblock %}
 
 class {{ table }} extends Data { 
 
@@ -12,20 +13,22 @@ class {{ table }} extends Data {
     {% endblock %}
     
     {% block methodeUpdate %}
-        async update( ctx ) {
+        async update( request ) {
             {% block updateBefore %}{% endblock %}
 
-            await super.update( ctx )
-
+            const result = await super.update( request )
             {% block updateAfter %}{% endblock %}
+
+            return result
+            
         }
     {% endblock %}
 
     {% block methodeFindeOne %}
-        async findOne( ctx ) {
+        async findOne( request ) {
             {% block findOneBefore %}{% endblock %}
 
-            const result = await super.findOne( ctx )
+            const result = await super.findOne( request )
 
             {% block findOneAfter %}{% endblock %}
             return result
@@ -33,12 +36,34 @@ class {{ table }} extends Data {
     {% endblock %}
 
     {% block methodeFind %}
-        async find( ctx ) {
+        async find( request ) {
             {% block findBefore %}{% endblock %}
 
-            const result = await super.find( ctx )
+            const result = await super.find( request )
 
             {% block findAfter %}{% endblock %}
+            return result
+        }
+    {% endblock %}
+
+    {% block methodeDelete %}
+        async delete( request ) {
+            {% block deleteBefore %}{% endblock %}
+
+            const result = await super.delete( request )
+
+            {% block deleteAfter %}{% endblock %}
+            return result
+        }
+    {% endblock %}
+
+    {% block methodeCount %}
+        async count( request ) {
+            {% block countBefore %}{% endblock %}
+
+            const result = await super.count( request )
+
+            {% block countAfter %}{% endblock %}
             return result
         }
     {% endblock %}

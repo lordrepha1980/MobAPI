@@ -3,6 +3,7 @@ const _dirname  = process.cwd()
 
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
+
 class user extends Data { 
 
     
@@ -10,24 +11,41 @@ class user extends Data {
             super();
         }
     
-
     
     
-    
-        async update( ctx ) {
+        async update( request ) {
             
 
-            await super.update( ctx )
+            const result = await super.update( request )
+             
+    if ( result.inserted || request.actions?.setPassword )
+        console.log('generate Password')
 
+
+            return result
             
         }
     
 
     
-        async findOne( ctx ) {
+        async findOne( request ) {
             
 
-            const result = await super.findOne( ctx )
+            const result = await super.findOne( request )
+
+              
+    if ( result.data )
+        result.data.password = null
+
+            return result
+        }
+    
+
+    
+        async find( request ) {
+            
+
+            const result = await super.find( request )
 
             
             return result
@@ -35,10 +53,21 @@ class user extends Data {
     
 
     
-        async find( ctx ) {
+        async delete( request ) {
             
 
-            const result = await super.find( ctx )
+            const result = await super.delete( request )
+
+            
+            return result
+        }
+    
+
+    
+        async count( request ) {
+            
+
+            const result = await super.count( request )
 
             
             return result
