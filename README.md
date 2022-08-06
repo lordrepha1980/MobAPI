@@ -73,6 +73,11 @@ Possible methodes in CUSTOMTEMPLATE
 
 ### Hook example
     {% block updateBefore %}{% endblock %}
+    
+### items in Hook
+available item in Hook are:
+    - result:   result from the database
+    - request:  request from the client
 
 ## API Calls
 Possible API Calls
@@ -98,7 +103,7 @@ Possible API Calls
     update
     count
     
-### Parameter
+### [Parameter]
     {
         table
         query
