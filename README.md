@@ -8,7 +8,24 @@ A node.js API
 3. Start server (for dev env `npm run dev`, for prod env `npm run start`)
 
 ## Configuration
-Configuration file is config.json in root.
+Create a file in root with name config.json.
+
+Example
+    {
+        "database": {
+            "type": "MongoDB",
+            "host": "localhost",
+            "port": 1337,
+            "crediantials": {
+                "username": "",
+                "password": ""
+            },
+            "name": "MobAPI"
+        },
+        "noDatabase": false
+    }
+
+MongoDB: connect to database withaut credentials remove key 'database.credentials'
 
 ### database init:
 

@@ -10,7 +10,11 @@ module.exports = class Connection {
 
         async init() {
             const { MongoClient }   = require('mongodb');
-            const url               = `mongodb://${config.database.host}:${config.database.port}`;
+            const url               = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
+
+            if ( config.database.credentials )
+                url               = `mongodb://${config.database.credentials.user}:${config.database.credentials.password}@${config.database.host}:${config.database.port}/${config.database.name}`;
+
             const client            = new MongoClient(url);
 
             // Database Name
