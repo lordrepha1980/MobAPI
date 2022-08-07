@@ -94,7 +94,9 @@ Possible methodes in CUSTOMTEMPLATE
 ### items in Hook
 available item in Hook are:
     - result:   result from the database
-    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.md#parameter)
+    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.
+    md#parameter)
+    - _dirname: root directory
 
 ## API Calls
 Possible API Calls

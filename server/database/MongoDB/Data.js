@@ -7,13 +7,13 @@ const uuid          = require('uuid');
 module.exports = class Data {
     
     constructor(  ) {
-        this.coll       = null
+
     }
 
     async initDb ( ) {
-        const Connection    = require( _dirname + '/server/database/MongoDB/Connection.js');
-        let connection      = new Connection();
-        const db             = await connection.init();     
+        const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
+        let connection          = new Connection();
+        const db                = await connection.init();     
         return db;
     }
 

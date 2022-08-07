@@ -1,9 +1,9 @@
-"use strict"
-const _dirname  = process.cwd()
+"use strict";
 
+const _dirname      = process.cwd();
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
-    const User = require( _dirname + "/server/database/MongoDB/generatedTables/user.js" )
+    const User = require( _dirname + "/server/database/MongoDB/dataApi/user.js" )
 
 
 class orders extends Data { 

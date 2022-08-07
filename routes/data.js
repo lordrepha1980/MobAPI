@@ -11,7 +11,7 @@ const router    = new Router({
 /* GET users listing. */
 router
     .get("/:table/:action", async (ctx, next) => {
-        const Data      = require(`${_dirname}/server/database/${config.database.type}/generatedTables/${ctx.params.table}.js`);
+        const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
         let result      = {data: null};
 
@@ -23,7 +23,7 @@ router
         ctx.body = result
     })
     .post("/:table/:action", async (ctx, next) => {
-        const Data      = require(`${_dirname}/server/database/${config.database.type}/generatedTables/${ctx.params.table}.js`);
+        const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
         let result      = {data: null};
 

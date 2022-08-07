@@ -1,6 +1,7 @@
 {
     "ignore": [
-        "./server/database/MongoDB/generatedTables/*",
-        "./server/database/sqlite/generatedTables/*"
+        "./server/database/MongoDB/dataApi/*",
+        "./server/database/sqlite/dataApi/*",
+        "./server/database/customApi/*"
     ]
 }

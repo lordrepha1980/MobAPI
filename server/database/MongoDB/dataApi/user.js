@@ -1,10 +1,10 @@
-"use strict"
-const _dirname  = process.cwd()
+"use strict";
 
+const _dirname      = process.cwd();
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
 
-class hobbys extends Data { 
+class user extends Data { 
 
     
         constructor() {
@@ -17,7 +17,10 @@ class hobbys extends Data {
             
 
             const result = await super.update( request )
-            
+             
+    if ( result.inserted || request.actions?.setPassword )
+        console.log('generate Password')
+
 
             return result
             
@@ -30,7 +33,10 @@ class hobbys extends Data {
 
             const result = await super.findOne( request )
 
-            
+              
+    if ( result.data )
+        result.data.password = null
+
             return result
         }
     
@@ -70,4 +76,4 @@ class hobbys extends Data {
 
 }
 
-module.exports = hobbys;
+module.exports = user;
