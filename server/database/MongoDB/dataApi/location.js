@@ -3,8 +3,10 @@
 const _dirname      = process.cwd();
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 
+    const User = require( _dirname + "/server/database/MongoDB/dataApi/user.js" )
 
-class user extends Data { 
+
+class location extends Data { 
 
     
         constructor() {
@@ -15,14 +17,23 @@ class user extends Data {
     
         async update( request ) {
             
+    const user = new User();
+    if ( !request.body )
+        request.body = {
+            from: 'location',
+            lastAccess: new Date()
+        }
+    
+    const { data: usr } = await user.findOne({ table: 'user', query: { _id: '1'} })
+
+    if ( usr )
+        request.body.user = usr
+    else
+        request.body.user = 'No user found'
+
 
             const result = await super.update( request )
-             
-
-    if ( result.inserted || request.actions?.setPassword )
-        console.log('generate Password')
-
-
+            
 
             return result
             
@@ -35,10 +46,7 @@ class user extends Data {
 
             const result = await super.findOne( request )
 
-              
-    if ( result.data )
-        result.data.password = null
-
+            
             return result
         }
     
@@ -78,4 +86,4 @@ class user extends Data {
 
 }
 
-module.exports = user;
+module.exports = location;

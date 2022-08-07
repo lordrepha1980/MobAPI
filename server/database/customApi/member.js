@@ -23,6 +23,11 @@ class member extends Custom {
         ctx.body = { text: 'hurra es geht', data: result };
     }
 
+    async getBla ( { ctx, request } ) {
+
+        ctx.body = { text: 'getBla'};
+    }
+
 
 
 }
