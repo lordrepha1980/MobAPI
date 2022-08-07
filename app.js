@@ -8,6 +8,7 @@ const logger            = require("morgan");
 
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
+const login              = require("./routes/login");
 
 const app               = new Koa();
 const router            = new Router();
@@ -15,6 +16,7 @@ const router            = new Router();
 app.use( koaBody() );
 app.use( data.routes() );
 app.use( custom.routes() );
+app.use( login.routes() );
 
 app
   .use(router.routes())

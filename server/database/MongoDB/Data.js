@@ -17,7 +17,7 @@ module.exports = class Data {
         return db;
     }
 
-    
+
     async update ( request ) {
         debug('update params: ', request );
         try{
@@ -50,11 +50,11 @@ module.exports = class Data {
                 return { data: result, inserted: res.upsertedId ? true : undefined }
             }
 
-            throw({ error: 'Fehler beim Speichern' })
+            throw({ error: 'Save abort' })
         } 
         catch (error) {
             console.error(error);
-            return error
+            return 'Database error: ' + error
         }
     }
 
@@ -77,41 +77,59 @@ module.exports = class Data {
         } 
         catch (error) {
             console.error(error);
-            return error
+            return 'Database error: ' + error
         }
     }
 
     async findOne ( request ) {
-        debug('findOne params: ', request );
-        const db = await this.initDb();
+        try {
+            debug('findOne params: ', request );
+            const db = await this.initDb();
 
-        const result = await db.collection(request.table).findOne(
-            request.query
-        );
+            const result = await db.collection(request.table).findOne(
+                request.query
+            );
 
-        return { data: result }
+            return { data: result }
+        } catch (error) {
+            console.error(error);
+            return 'Database error: ' + error
+        }
     }
 
     async find ( request ) {
-        debug('find params: ', request );
-        const db = await this.initDb();
+        try {
+            debug('find params: ', request );
+            const db = await this.initDb();
 
-        const result = await db.collection(request.table).find(
-            request.query
-        ).toArray();
+            const result = await db.collection(request.table).find(
+                request.query
+            )
+            .sort( request.sort || null )
+            .skip( request.skip || 0 )
+            .limit( request.limit || 0 )
+            .toArray();
 
-        return { data: result }
+            return { data: result }
+        } catch (error) {
+            console.error(error);
+            return 'Database error: ' + error
+        }
     }
 
     async count ( request ) {
-        debug('count params: ', request );
-        const db = await this.initDb();
+        try {
+            debug('count params: ', request );
+            const db = await this.initDb();
 
-        const result = await db.collection(request.table).count(
-            request.query
-        );
+            const result = await db.collection(request.table).count(
+                request.query
+            );
 
-        return { data: result }
+            return { data: result }
+        } catch (error) {
+            console.error(error);
+            return 'Database error: ' + error
+        }
     }
-    
 }

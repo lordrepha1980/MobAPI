@@ -11,12 +11,21 @@ const router    = new Router({
 /* GET users listing. */
 router
     .get("/:table/:action", async (ctx, next) => {
+   
         const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
         let result      = {data: null};
 
         if (table[ctx.params.action] && ( ctx.params.action === 'findOne'  || ctx.params.action === 'find' || ctx.params.action === 'count'))
-            result.data = await table[ctx.params.action]( { table: ctx.params.table, query: ctx.params.query } )
+            result.data = await table[ctx.params.action]( { 
+                table:      ctx.params.table, 
+                query:      ctx.params.query,
+                sort:       ctx.params.sort,
+                skip:       ctx.params.skip,
+                limit:      ctx.params.limit,
+                auth:       ctx.isAuthenticated(),
+                user:       ctx.user ? ctx.user : null
+        } )
         else
             console.error( 'No action found. Called action: ', ctx.params.action )
 
@@ -28,7 +37,17 @@ router
         let result      = {data: null};
 
         if (table[ctx.params.action]) {
-            result = await table[ctx.params.action]( { table: ctx.params.table, query: ctx.request.body.query, body: ctx.request.body.body, actions: ctx.request.body.actions } )
+            result = await table[ctx.params.action]( { 
+                table:      ctx.params.table, 
+                query:      ctx.request.body.query, 
+                body:       ctx.request.body.body, 
+                actions:    ctx.request.body.actions,
+                sort:       ctx.request.body.sort,
+                skip:       ctx.request.body.skip,
+                limit:      ctx.request.body.limit,
+                auth:       ctx.isAuthenticated(),
+                user:       ctx.user ? ctx.user : null
+            } )
         } else {
             const err = 'No action found. Called action: ' + ctx.params.action
             console.error( err )

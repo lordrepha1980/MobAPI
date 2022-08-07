@@ -4,8 +4,10 @@ A node.js API
 ## Installation
 
 1. `git clone git@github.com:CodingRuo/MobAPI.git`
-2. npm install || npm i
-3. Start server (for dev env `npm run dev`, for prod env `npm run start`)
+2. npm i
+3. npm i pm2 -g
+4. Configuration
+4. Start server `pm2 start mobapi.config.js`
 
 ## Configuration
 Create a file in root with name config.json.

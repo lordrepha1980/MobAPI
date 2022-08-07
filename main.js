@@ -1,7 +1,8 @@
 const tables                = require("./server/database/tables.json");
 const config                = require("./config.json");
 const dbType                = config.database.type;
-const fs                    = require('fs');    
+const fs                    = require('fs');  
+const fsPromise             = require('fs/promises');    
 const _dirname              = process.cwd();
 
 const Nunjucks              = require("nunjucks");   
@@ -17,20 +18,16 @@ const main = {
     },
     checkStructure: async () =>{ 
         console.log('check Structure: ');
-        if ( !fs.existsSync(`./server/custom`) )
-            await fs.mkdirSync('./server/custom');
 
-        if ( !fs.existsSync(`./server/custom/data`) )
-            await fs.mkdirSync('./server/custom/data');
+        const checks = [
+            './server/custom/data',
+            './server/custom/custom',
+            './server/database/customApi',
+            './server/database/MongoDB/dataApi'
+        ];
 
-        if ( !fs.existsSync(`./server/custom/custom`) )
-            await fs.mkdirSync('./server/custom/custom'); 
-
-        if ( !fs.existsSync(`./server/database/customApi`) )
-            await fs.mkdirSync('./server/database/customApi'); 
-
-        if ( !fs.existsSync(`./server/database/MongoDb/dataApi`) )
-            await fs.mkdirSync('./server/database/MongoDb/dataApi'); 
+        for (let i = 0; i < checks.length; i++)
+            fs.mkdirSync(checks[i], {recursive: true})
     },
     generateTables: function() {
         //generate tables für DATA
