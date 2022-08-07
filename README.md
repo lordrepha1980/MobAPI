@@ -11,6 +11,7 @@ A node.js API
 Create a file in root with name config.json.
 
 Example
+
     {
         "database": {
             "type": "MongoDB",
@@ -98,8 +99,8 @@ available item in Hook are:
     md#parameter)
     - _dirname: root directory
 
-## API Calls
-Possible API Calls
+## DATA API Calls
+this is the API for `https://url/data/` request.
 
 ## get
     find 
@@ -152,6 +153,49 @@ Possible API Calls
     }
 
 :table i the endpoint from the API normally Databasetable
+
+## CUSTOM API Calls
+this is the API for `https://url/custom/` request.
+
+## all (get, post, put ...)
+    everything what you want
+    
+### Example:
+    `https://url/custom/:class/:action
+    
+:class is the class :action is the methode frpm the class
+    
+### Parameter
+    {
+        ctx
+        query
+    }
+    
+- ctx:      complete request from KOA
+- query:    (Object) Select data from DB
+    
+
+#Templates
+## default DATA Template
+this template is for custom/data/:table request
+
+    {% extends _dirname + '/server/database/' + database + '/mainTemplate.js' %}
+
+    {% block main %}{% endblock %}
+    
+    //insert hooks or methods here 
+    
+## default CUSTOM Template
+this template is for custom/custom/:class request
+
+    {% extends _dirname + '/server/database/customTemplate.js' %}
+
+    {% block main %}{% endblock %}
+
+    {% block methodeFunction %}
+        //write methods here
+    {% endblock %} 
+
 
 
 
