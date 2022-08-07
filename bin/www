@@ -25,14 +25,14 @@ const server    = app
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log( "Server starts on port:" + port );
 
     //generate tables
     // if (!config.noDatabase)
     //     main.initDatabase();
-
-    main.generateTables();
+    await main.checkStructure();
+    await main.generateTables();
     
 });
 server.on("error", onError);

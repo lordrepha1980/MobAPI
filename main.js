@@ -15,6 +15,23 @@ const main = {
             let connection          = new Connection();
             const db                = await connection.init();        }
     },
+    checkStructure: async () =>{ 
+        console.log('check Structure: ');
+        if ( !fs.existsSync(`./server/custom`) )
+            await fs.mkdirSync('./server/custom');
+
+        if ( !fs.existsSync(`./server/custom/data`) )
+            await fs.mkdirSync('./server/custom/data');
+
+        if ( !fs.existsSync(`./server/custom/custom`) )
+            await fs.mkdirSync('./server/custom/custom'); 
+
+        if ( !fs.existsSync(`./server/database/customApi`) )
+            await fs.mkdirSync('./server/database/customApi'); 
+
+        if ( !fs.existsSync(`./server/database/MongoDb/dataApi`) )
+            await fs.mkdirSync('./server/database/MongoDb/dataApi'); 
+    },
     generateTables: function() {
         //generate tables für DATA
         for( const [ key, item ] of Object.entries(tables) ) { 
