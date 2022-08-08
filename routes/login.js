@@ -18,8 +18,12 @@ router
 
 router
     .post("/", async (ctx) => {
-        
-        const Login      = require(`${_dirname}/server/database/${config.database.type}/default/auth.js`);
+        let path = _dirname + '/server/app/system/auth.js';
+
+        if (fs.existsSync(_dirname + '/server/custom/system/auth.js'))
+            path = _dirname + '/server/custom/system/auth.js';
+
+        const Login      = require(path);
         const login     = new Login();
 
         const user = await login.checkUser(ctx)

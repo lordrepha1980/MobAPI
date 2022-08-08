@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
-
-const app       = require("../app");
-const main      = require("../main");
+_dirname        = process.cwd();
+const app       = require(_dirname + "/app");
+const main      = require(_dirname + "/server/app/main");
 const debug     = require("debug")("MobAPI:server");
-const config    = require("../config.json");
+const config    = require(_dirname + "/config.json");
 const http      = require("http");
 
 /**

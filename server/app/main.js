@@ -1,9 +1,9 @@
-const tables                = require("./server/database/tables.json");
-const config                = require("./config.json");
+const _dirname              = process.cwd();
+const tables                = require(_dirname + "/server/database/tables.json");
+const config                = require(_dirname + "/config.json");
 const dbType                = config.database.type;
 const fs                    = require('fs');  
 const fsPromise             = require('fs/promises');    
-const _dirname              = process.cwd();
 
 const Nunjucks              = require("nunjucks");   
 
@@ -12,7 +12,7 @@ const main = {
         console.log('init Database: ', dbType);
 
         if ( dbType === 'MongoDB' ) {
-            const Connection        = require('./server/database/MongoDB/Connection.js');
+            const Connection        = require('../database/MongoDB/Connection.js');
             let connection          = new Connection();
             const db                = await connection.init();        }
     },
@@ -22,6 +22,7 @@ const main = {
         const checks = [
             './server/custom/data',
             './server/custom/custom',
+            './server/custom/system',
             './server/database/customApi',
             './server/database/MongoDB/dataApi'
         ];

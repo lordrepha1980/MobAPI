@@ -1,7 +1,12 @@
 const Koa               = require("koa");
 const app               = new Koa();
+const fs                = require('fs');  
 
-require('./auth');
+if (fs.existsSync(`./server/custom/system/passportStrategy.js`))
+    require('./server/custom/system/passportStrategy.js');
+else
+    require('./server/app/system/passportStrategy');
+    
 const passport          = require('koa-passport')
 app.use(passport.initialize());
 app.use(passport.session());

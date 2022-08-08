@@ -51,7 +51,18 @@ STANDARDTEMPLATE for API
     
 With CUSTOMTEMPLATE are possible extend the STANDARDTEMPLATE. 
     server/custom/mycustomtemplate.js 
+
+`server/custom`
+the main directory for developer. 
+    `/data`: In this directory you can set hooks or methods for 'data' endpoint like `yourdomain/data/:table/:action`
+
+    `/custom` In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
+
+    `system`In the  directory you can overwrite system endpoints 
     
+    possible endpoints are:
+    `yourdomain/auth`  
+
 **Warning dont insert code in STANDARDTEMPLATE, you can add code in CUSTOMTEMPLATE**
 
 Insert new Table in file

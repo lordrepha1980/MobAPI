@@ -3,7 +3,7 @@
 const _dirname      = process.cwd();
 const Custom        = require(_dirname + '/server/database/Custom.js');
 
-const Auth          = require( _dirname + '/checkAuth.js');
+const Auth          = require( _dirname + '/server/app/checkAuth.js');
 const auth          = new Auth()
 
 
