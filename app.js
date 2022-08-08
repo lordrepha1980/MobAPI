@@ -1,22 +1,43 @@
 const Koa               = require("koa");
-const Router            = require('@koa/router');
-const koaBody           = require('koa-body');
+const app               = new Koa();
 
-const path              = require("path");
-const cookieParser      = require("cookie-parser");
-const logger            = require("morgan");
+require('./auth');
+const passport          = require('koa-passport')
+app.use(passport.initialize());
+app.use(passport.session());
+
+const Router            = require('@koa/router');
+const koaBody           = require('koa-bodyparser');
+const session           = require('koa-session')
 
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
-const login              = require("./routes/login");
+const login             = require("./routes/login");
 
-const app               = new Koa();
 const router            = new Router();
 
 app.use( koaBody() );
-app.use( data.routes() );
-app.use( custom.routes() );
-app.use( login.routes() );
+
+router.use( '/', async ( ctx, next ) => { 
+    const auth = function () {
+        return new Promise((resolve, reject) => {
+            passport.authenticate('jwt', { session: false }, function (err, user, info, status) {
+                ctx.auth = user ? true : false;
+                ctx.user = user
+                resolve({ user, status })
+            })(ctx);
+        })
+    }
+
+    await auth()
+    await next()
+    
+});
+
+router.use( data.routes() );
+router.use( custom.routes() );
+router.use( login.routes() );
+app.use(session({}, app))
 
 app
   .use(router.routes())

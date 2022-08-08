@@ -23,7 +23,7 @@ router
                 sort:       ctx.params.sort,
                 skip:       ctx.params.skip,
                 limit:      ctx.params.limit,
-                auth:       ctx.isAuthenticated(),
+                auth:       ctx.auth,
                 user:       ctx.user ? ctx.user : null
         } )
         else
@@ -45,7 +45,7 @@ router
                 sort:       ctx.request.body.sort,
                 skip:       ctx.request.body.skip,
                 limit:      ctx.request.body.limit,
-                auth:       ctx.isAuthenticated(),
+                auth:       ctx.auth,
                 user:       ctx.user ? ctx.user : null
             } )
         } else {

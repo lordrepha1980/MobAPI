@@ -1,7 +1,11 @@
 "use strict";
 
 const _dirname      = process.cwd();
-const Custom          = require(_dirname + '/server/database/Custom.js');
+const Custom        = require(_dirname + '/server/database/Custom.js');
+
+const Auth          = require( _dirname + '/checkAuth.js');
+const auth          = new Auth()
+
 
     const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
     const user = new User()
@@ -14,7 +18,7 @@ class member extends Custom {
             super();
         }
     
-    
+
     
     async getUser ( { ctx, request } ) {
         console.log(ctx, request)
@@ -27,7 +31,6 @@ class member extends Custom {
 
         ctx.body = { text: 'getBla'};
     }
-
 
 
 }

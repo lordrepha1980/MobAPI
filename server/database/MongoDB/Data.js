@@ -19,8 +19,15 @@ module.exports = class Data {
 
 
     async update ( request ) {
-        debug('update params: ', request );
         try{
+            if ( !request.auth )
+                throw('Unauthorized')
+
+                debug('update params: ', request );
+
+            if ( !request.auth )
+                throw('Unauthorized')
+
             const db = await this.initDb();
             
             if ( request.body && request.body._id ) {
@@ -59,8 +66,12 @@ module.exports = class Data {
     }
 
     async delete ( request ) {
-        debug('delete params: ', request );
         try{
+            if ( !request.auth )
+                throw('Unauthorized')
+
+            debug('delete params: ', request );
+
             const db = await this.initDb();
 
             if ( !request.query || Object.keys(request.query).length === 0 )
@@ -83,6 +94,9 @@ module.exports = class Data {
 
     async findOne ( request ) {
         try {
+            if ( !request.auth )
+                throw('Unauthorized')
+
             debug('findOne params: ', request );
             const db = await this.initDb();
 
@@ -99,6 +113,9 @@ module.exports = class Data {
 
     async find ( request ) {
         try {
+            if ( !request.auth )
+                throw('Unauthorized')
+
             debug('find params: ', request );
             const db = await this.initDb();
 
@@ -119,6 +136,9 @@ module.exports = class Data {
 
     async count ( request ) {
         try {
+            if ( !request.auth )
+                throw('Unauthorized')
+
             debug('count params: ', request );
             const db = await this.initDb();
 

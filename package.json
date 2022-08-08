@@ -11,11 +11,17 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-passport": "^5.0.0",
+    "koa-session": "^6.2.0",
     "mongodb": "^4.8.1",
     "morgan": "~1.9.1",
     "nunjucks": "^3.2.3",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "uuid": "^8.3.2"
   }
 }

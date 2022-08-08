@@ -127,16 +127,20 @@ this is the API for `https://url/data/` request.
     
 ### Parameter
     {
-        table
-        query
-        body
-        actions
+        table,
+        query,
+        body,
+        actions,
+        auth,
+        user
     }
     
 - table:    (String) Databasetable
 - query:    (Object) Select data from DB
 - body:     For Update new updated item
 - actions:  Hook for custom actions
+- auth:     (boolean) true / false is user login
+- user:     (Object) the user
     
 ### Example:
     get first item from database with _id = '1'
@@ -173,7 +177,7 @@ this is the API for `https://url/custom/` request.
         query
     }
     
-- ctx:      complete request from KOA
+- ctx:      complete request from Koa
 - query:    (Object) Select data from DB
     
 
