@@ -46,14 +46,16 @@ possible database are ['MongoDB']
     "noDatabase": false init no database
 
 ## Structure
+### server/database/selected database/mainTemplates.js 
 STANDARDTEMPLATE for API
-    server/database/selected database/mainTemplates.js 
-    
-With CUSTOMTEMPLATE are possible extend the STANDARDTEMPLATE. 
-    server/custom/mycustomtemplate.js 
 
-`server/custom`
+### server/custom/mycustomtemplate.js
+CUSTOMTEMPLATE for API. With CUSTOMTEMPLATE are possible extend the STANDARDTEMPLATE. 
+     
+
+### server/custom
 the main directory for developer. 
+
     `/data`: In this directory you can set hooks or methods for 'data' endpoint like `yourdomain/data/:table/:action`
 
     `/custom` In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
