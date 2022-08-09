@@ -225,10 +225,11 @@ this template is for custom/custom/:class request
     {% block methodeFunction %}
         //write methods here
     {% endblock %} 
-    
+
+
 #Code-Examples
 
-#1 Google-API
+1. Google-API
     /server/custom/custom/googleAPI.js
 
     
@@ -258,8 +259,10 @@ this template is for custom/custom/:class request
                 console.log('custom getDirection error: ' + error)
             }
         }
-
+        
+        Now you can call url/custom/googleApi/getDirection
     {% endblock %}
-
+    
+    
 
 
