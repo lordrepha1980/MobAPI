@@ -19,57 +19,82 @@ class {{ table }} extends Data {
     
     {% block methodUpdate %}
         async update( request ) {
-            {% block updateBefore %}{% endblock %}
+            try {
+                {% block updateBefore %}{% endblock %}
 
-            const result = await super.update( request )
-            {% block updateAfter %}{% endblock %}
+                const result = await super.update( request )
+                {% block updateAfter %}{% endblock %}
 
-            return result
+                return result
+            }
+            catch (error) { 
+                return error
+            }
             
         }
     {% endblock %}
 
     {% block methodFindeOne %}
         async findOne( request ) {
-            {% block findOneBefore %}{% endblock %}
+            try {
+                {% block findOneBefore %}{% endblock %}
 
-            const result = await super.findOne( request )
+                const result = await super.findOne( request )
 
-            {% block findOneAfter %}{% endblock %}
-            return result
+                {% block findOneAfter %}{% endblock %}
+                return result
+            }
+            catch (error) { 
+                return error
+            }
         }
     {% endblock %}
 
     {% block methodFind %}
         async find( request ) {
-            {% block findBefore %}{% endblock %}
+            try {
+                {% block findBefore %}{% endblock %}
 
-            const result = await super.find( request )
+                const result = await super.find( request )
 
-            {% block findAfter %}{% endblock %}
-            return result
+                {% block findAfter %}{% endblock %}
+                return result
+            }
+            catch (error) { 
+                return error
+            }
         }
     {% endblock %}
 
     {% block methodDelete %}
         async delete( request ) {
-            {% block deleteBefore %}{% endblock %}
+            try {
+                {% block deleteBefore %}{% endblock %}
 
-            const result = await super.delete( request )
+                const result = await super.delete( request )
 
-            {% block deleteAfter %}{% endblock %}
-            return result
+                {% block deleteAfter %}{% endblock %}
+                return result
+            }
+            catch (error) { 
+                return error
+            }
         }
     {% endblock %}
 
     {% block methodCount %}
         async count( request ) {
-            {% block countBefore %}{% endblock %}
+            try {
+                {% block countBefore %}{% endblock %}
 
-            const result = await super.count( request )
+                const result = await super.count( request )
 
-            {% block countAfter %}{% endblock %}
-            return result
+                {% block countAfter %}{% endblock %}
+                return result
+            }
+            catch (error) { 
+                return error
+            }
         }
     {% endblock %}
 

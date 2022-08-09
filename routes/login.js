@@ -2,10 +2,20 @@ const _dirname  = process.cwd()
 const config    = require(_dirname + "/config.json");
 const passport  = require('koa-passport');
 const Router    = require('@koa/router');
-const jwt       = require('jsonwebtoken');
+const debug     = require('debug')('app:routes:login');
+
+const main     = require(_dirname + '/server/app/main');
 
 const Secret    = require( _dirname + '/server/app/system/secret.js');
 const secret    = new Secret();
+
+const signin            = new (main.getModule('/system/signin.js'))();
+const register          = new (main.getModule('/system/register.js'))();
+const login             = new (main.getModule('/system/auth.js'))();
+const logout            = new (main.getModule('/system/logout.js'))();
+
+
+//todoo check custom files
 
 const router    = new Router({
     prefix: '/auth'
@@ -20,27 +30,60 @@ router
     )
 
 router
+    .post("/register", async ( ctx ) => {
+
+        if ( !ctx.request.body?.body || !ctx.request.body.body.username || !ctx.request.body.body.password ) {
+            debug("Please set username and password")
+            ctx.body = "Please set username and password";
+            return
+        }
+
+        const registerDone = await register.register( ctx.request.body );
+        ctx.status = registerDone.error ? 400 : 200;
+        ctx.body = registerDone;
+    })
+
+router
+    .post(["/signin", "/login"], async ( ctx ) => {
+
+        if ( !ctx.request.body?.body || !ctx.request.body.body.username || !ctx.request.body.body.password ) {
+            debug("Please set username and password")
+            ctx.status  = 400;
+            ctx.body    = "Please set username and password";
+            return
+        }
+
+        const signinDone = await signin.signin( ctx.request.body );
+
+        ctx.status  = signinDone.error ? 400 : 200;
+        ctx.body    = { data: { token: signinDone } };
+    })
+
+router
     .all("/secret", async (ctx) => {
         const secrets   = await secret.generate()
+
+        ctx.status      = secrets.error ? 400 : 200;
         ctx.body        = secrets
     })
 
 router
     .post("/", async (ctx) => {
-        let path = _dirname + '/server/app/system/auth.js';
 
-        if (fs.existsSync(_dirname + '/server/custom/system/auth.js'))
-            path = _dirname + '/server/custom/system/auth.js';
+        const token = await login.checkUser(ctx.request.body);
 
-        const Login      = require(path);
-        const login     = new Login();
+        ctx.status  = token.error ? 400 : 200;
+        ctx.body    = token ? { data: { token } } : 'User not found';
+        
+    })
 
-        const user = await login.checkUser(ctx)
+router
+    .get("/logout", async (ctx) => {
 
-        if ( user ) {
-            ctx.body = jwt.sign(user, config.auth.secret, config.auth.options);
-        } else
-            ctx.body = 'User not found'
+        const data  = await logout.logout(ctx);
+        
+        ctx.status  = data.error ? 400 : 200;
+        ctx.body    = data;
         
     })
 

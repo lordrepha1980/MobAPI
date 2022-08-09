@@ -3,6 +3,7 @@ const debug         = require('debug')('app:server:database:MongoDB:Data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
+const config        = require(_dirname + '/config.json');
 
 module.exports = class Data {
     
@@ -23,7 +24,7 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Unauthorized')
 
-                debug('update params: ', request );
+            config.debug.extend && debug('update params: ', request );
 
             if ( !request.auth )
                 throw('Unauthorized')
@@ -61,7 +62,7 @@ module.exports = class Data {
         } 
         catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 
@@ -70,7 +71,7 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Unauthorized')
 
-            debug('delete params: ', request );
+            config.debug.extend && debug('delete params: ', request );
 
             const db = await this.initDb();
 
@@ -88,7 +89,7 @@ module.exports = class Data {
         } 
         catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 
@@ -97,7 +98,7 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Unauthorized')
 
-            debug('findOne params: ', request );
+            config.debug.extend && debug('findOne params: ', request );
             const db = await this.initDb();
 
             const result = await db.collection(request.table).findOne(
@@ -107,7 +108,7 @@ module.exports = class Data {
             return { data: result }
         } catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 
@@ -116,7 +117,7 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Unauthorized')
 
-            debug('find params: ', request );
+            config.debug.extend && debug('find params: ', request );
             const db = await this.initDb();
 
             const result = await db.collection(request.table).find(
@@ -130,7 +131,7 @@ module.exports = class Data {
             return { data: result }
         } catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 
@@ -139,7 +140,7 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Unauthorized')
 
-            debug('count params: ', request );
+            config.debug.extend && debug('count params: ', request );
             const db = await this.initDb();
 
             const result = await db.collection(request.table).count(
@@ -149,7 +150,7 @@ module.exports = class Data {
             return { data: result }
         } catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 }

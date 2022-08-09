@@ -14,22 +14,24 @@ router
    
         const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
-        let result      = {data: null};
+        let result      = null;
 
         if (table[ctx.params.action] && ( ctx.params.action === 'findOne'  || ctx.params.action === 'find' || ctx.params.action === 'count'))
-            result.data = await table[ctx.params.action]( { 
+            result = await table[ctx.params.action]( { 
                 table:      ctx.params.table, 
                 query:      ctx.params.query,
                 sort:       ctx.params.sort,
                 skip:       ctx.params.skip,
                 limit:      ctx.params.limit,
                 auth:       ctx.auth,
-                user:       ctx.user ? ctx.user : null
+                user:       ctx.user ? ctx.user : null,
+                ctx
         } )
         else
             console.error( 'No action found. Called action: ', ctx.params.action )
 
-        ctx.body = result
+        ctx.status      = result.error ? 400 : 200;
+        ctx.body        = result
     })
     .post("/:table/:action", async (ctx, next) => {
         const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
@@ -46,7 +48,8 @@ router
                 skip:       ctx.request.body.skip,
                 limit:      ctx.request.body.limit,
                 auth:       ctx.auth,
-                user:       ctx.user ? ctx.user : null
+                user:       ctx.user ? ctx.user : null,
+                ctx
             } )
         } else {
             const err = 'No action found. Called action: ' + ctx.params.action

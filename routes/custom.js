@@ -18,7 +18,9 @@ router
             result.data = await custom[ctx.params.action]( { query: ctx.params.query, ctx } )
         else {
             console.error( 'No action found. Called action: ', ctx.params.action )
-            ctx.body = result
+
+            ctx.status  = result.error ? 400 : 200;
+            ctx.body    = result;
         }
     })
 

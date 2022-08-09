@@ -3,12 +3,12 @@
 /**
  * Module dependencies.
  */
-_dirname        = process.cwd();
-const app       = require(_dirname + "/app");
-const main      = require(_dirname + "/server/app/main");
-const debug     = require("debug")("MobAPI:server");
-const config    = require(_dirname + "/config.json");
-const http      = require("http");
+_dirname                = process.cwd();
+const app               = require(_dirname + "/app");
+const main              = require(_dirname + "/server/app/main");
+const debug             = require("debug")("MobAPI:server");
+const config            = require(_dirname + "/config.json");
+const http              = require("http");
 
 /**
  * Get port from environment and store in Express.
@@ -34,7 +34,7 @@ server.listen(port, async () => {
     //     main.initDatabase();
     await main.checkStructure();
     await main.generateTables();
-    
+
 });
 server.on("error", onError);
 server.on("listening", onListening);

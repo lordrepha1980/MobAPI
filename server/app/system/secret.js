@@ -23,7 +23,7 @@ module.exports = class Secret {
         } 
         catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 }

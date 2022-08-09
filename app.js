@@ -15,10 +15,6 @@ const Router            = require('@koa/router');
 const koaBody           = require('koa-bodyparser');
 const session           = require('koa-session')
 
-const data              = require("./routes/data");
-const custom            = require("./routes/custom");
-const login             = require("./routes/login");
-
 const router            = new Router();
 
 app.use( koaBody() );
@@ -39,10 +35,17 @@ router.use( '/', async ( ctx, next ) => {
     
 });
 
+const main             = require("./server/app/main");
+main.moduleLoader()
+const data              = require("./routes/data");
+const custom            = require("./routes/custom");
+const login             = require("./routes/login");
+
 router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
-app.use(session({}, app))
+app.use(session({}, app));
+
 
 app
   .use(router.routes())

@@ -8,6 +8,51 @@ const fsPromise             = require('fs/promises');
 const Nunjucks              = require("nunjucks");   
 
 const main = {
+    moduleLoader: () => { 
+        //register
+        try {
+            require(_dirname + '/server/custom/system/register.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/register.js');
+        }
+
+        //signin
+        try {
+            require(_dirname + '/server/custom/system/signin.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/signin.js');
+        }
+        
+        //auth
+        try {
+            require(_dirname + '/server/custom/system/auth.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/auth.js');
+        }
+
+        //logout
+        try {
+            require(_dirname + '/server/custom/system/logout.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/logout.js');
+        }
+
+    },
+    getModule: (module) => {
+        return Object.entries(require.cache).reduce((acc, [module_path, loaded_module]) => {
+
+            // Wenn schon ein Eintrag gefunden wurde
+            if (acc !== undefined) {
+              return acc;
+            }
+    
+            if (module_path.endsWith(module) === false) {
+              return acc;
+            }
+    
+            return loaded_module.exports;
+          }, undefined);
+    },
     initDatabase: async () =>{ 
         console.log('init Database: ', dbType);
 
@@ -30,7 +75,7 @@ const main = {
         for (let i = 0; i < checks.length; i++)
             fs.mkdirSync(checks[i], {recursive: true})
     },
-    generateTables: function() {
+    generateTables: async function() {
         //generate tables für DATA
         for( const [ key, item ] of Object.entries(tables) ) { 
             //Main Template
@@ -43,11 +88,13 @@ const main = {
             console.log('render Template (DATA): ', Template); 
             const template              = Nunjucks.render(Template, { table: key, database: dbType, _dirname });
             //write templates
-            fs.writeFile(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {
-                if (err) {
-                    console.error(err);
-                }
+
+            fs.writeFileSync(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {
+                if (err) 
+                    reject(err);
+                resolve()
             });
+          
         }
 
         //generate tables für Custom
@@ -60,7 +107,7 @@ const main = {
 
                     const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
                     //write templates
-                    fs.writeFile(`./server/database/customApi/${file}`, template, err => {
+                    fs.writeFileSync(`./server/database/customApi/${file}`, template, err => {
                         if (err) {
                             console.error(err);
                         }

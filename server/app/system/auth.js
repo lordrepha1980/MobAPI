@@ -1,7 +1,10 @@
 "use strict";
 const debug         = require('debug')('app:server:app:system:auth');
+const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
+const config        = require(_dirname + '/config.json');
+const jwt           = require('jsonwebtoken');
 
 const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
 const user = new User()
@@ -12,17 +15,33 @@ module.exports = class Login {
 
     }
 
-    async checkUser ( ctx ) { 
-        debug('checkUser params: ', ctx );
+    async checkUser ( bodyParse ) { 
+        config.debug.extend && debug('checkUser params: ', ctx );
         try{
             const { data: result } = await user.findOne(
-                { table: 'user', auth: true, query: { username: ctx.request.body.username } }
+                { table: 'user', auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
             );
-            return result;
+            
+            if ( !result )
+                throw ("User does not exist");
+
+            const compare = await bcrypt.compare( bodyParse.body.password, result.password )
+
+            if ( !compare )
+                throw ("Login failed");
+            
+            let token = null;
+
+            if ( result ) {
+                delete result.password
+                token = jwt.sign(result, config.auth.secret, config.auth.options);
+            }
+                
+            return token;
         } 
         catch (error) {
             console.error(error);
-            return 'Database error: ' + error
+            return { error };
         }
     }
 }
