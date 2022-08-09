@@ -240,9 +240,6 @@ this template is for custom/custom/:class request
                 //check is user registerd user, if not throw(). This is a internal method from MobAPI
                 await auth.check(ctx) 
                 
-                //get API endpoint with internal method mob.get
-                const drive = mob.get('data/drive')
-                
                 //get directions from googlemaps
                 
                 //update drive
@@ -251,6 +248,9 @@ this template is for custom/custom/:class request
                     lat: 'lat from Google'
                 }
                 
+                //get API endpoint with internal method mob.get
+                const drive = mob.get('data/drive');
+                //write update to database
                 await drive.update({ table: 'user', auth: ctx.auth, body: body })
 
                 ctx.body = { data: 'Update Complete' }
