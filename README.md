@@ -159,12 +159,12 @@ this is the API for `https://url/data/` request.
         user
     }
     
-- table:    (String) Databasetable
+- table:    Required (String) Databasetable
 - query:    (Object) Select data from DB
 - body:     For Update new updated item
 - actions:  Hook for custom actions
-- auth:     (boolean) true / false is user login
-- user:     (Object) the user
+- auth:     Required (boolean) true / false is user login ( only server parameter )
+- user:     (Object) the user ( only server parameter )
     
 ### Example:
     get first item from database with _id = '1'
@@ -225,7 +225,41 @@ this template is for custom/custom/:class request
     {% block methodeFunction %}
         //write methods here
     {% endblock %} 
+    
+#Code-Examples
 
+#1 Google-API
+    /server/custom/custom/googleAPI.js
+
+    
+    {% extends _dirname + '/server/database/customTemplate.js' %} //required do not move this line
+
+    {% block methodFunction %}
+        async getDirection ( { ctx } ) {
+            try {
+                //check is user registerd user, if not throw(). This is a internal method from MobAPI
+                await auth.check(ctx) 
+                
+                //get API endpoint with internal method mob.get
+                const drive = mob.get('data/drive')
+                
+                //get directions from googlemaps
+                
+                //update drive
+                const body = {
+                    lat: 'lat from Google'
+                    lat: 'lat from Google'
+                }
+                
+                await drive.update({ table: 'user', auth: ctx.auth, body: body })
+
+                ctx.body = { data: 'Update Complete' }
+            } catch (error) {
+                console.log('custom getDirection error: ' + error)
+            }
+        }
+
+    {% endblock %}
 
 
 
