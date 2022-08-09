@@ -1,5 +1,5 @@
 "use strict";
-const debug         = require('debug')('app:server:database:MongoDB:default:auth');
+const debug         = require('debug')('app:server:app:system:auth');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 

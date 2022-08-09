@@ -4,6 +4,9 @@ const passport  = require('koa-passport');
 const Router    = require('@koa/router');
 const jwt       = require('jsonwebtoken');
 
+const Secret    = require( _dirname + '/server/app/system/secret.js');
+const secret    = new Secret();
+
 const router    = new Router({
     prefix: '/auth'
 });
@@ -15,6 +18,12 @@ router
             ctx.body = ctx.isAuthenticated()
         }
     )
+
+router
+    .all("/secret", async (ctx) => {
+        const secrets   = await secret.generate()
+        ctx.body        = secrets
+    })
 
 router
     .post("/", async (ctx) => {

@@ -1,7 +1,7 @@
 module.exports = {
     apps : [{
         name   : "MobAPI",
-        script : "./bin/www",
+        script : "DEBUG=app:* ./bin/www",
         watch  : true,
         ignore_watch: [
             "./server/database/MongoDB/dataApi/*",

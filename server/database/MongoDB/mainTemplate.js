@@ -2,17 +2,22 @@
 
 const _dirname      = process.cwd();
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
+const DataClass     = new Data();
+
+const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
+const classRouter   = new ClassRouter();
+
 {% block main %}{% endblock %}
 
 class {{ table }} extends Data { 
 
-    {% block methodeConstructor %}
+    {% block methodConstructor %}
         constructor() {
             super();
         }
     {% endblock %}
     
-    {% block methodeUpdate %}
+    {% block methodUpdate %}
         async update( request ) {
             {% block updateBefore %}{% endblock %}
 
@@ -24,7 +29,7 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
-    {% block methodeFindeOne %}
+    {% block methodFindeOne %}
         async findOne( request ) {
             {% block findOneBefore %}{% endblock %}
 
@@ -35,7 +40,7 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
-    {% block methodeFind %}
+    {% block methodFind %}
         async find( request ) {
             {% block findBefore %}{% endblock %}
 
@@ -46,7 +51,7 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
-    {% block methodeDelete %}
+    {% block methodDelete %}
         async delete( request ) {
             {% block deleteBefore %}{% endblock %}
 
@@ -57,7 +62,7 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
-    {% block methodeCount %}
+    {% block methodCount %}
         async count( request ) {
             {% block countBefore %}{% endblock %}
 

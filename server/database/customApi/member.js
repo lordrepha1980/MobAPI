@@ -4,7 +4,10 @@ const _dirname      = process.cwd();
 const Custom        = require(_dirname + '/server/database/Custom.js');
 
 const Auth          = require( _dirname + '/server/app/checkAuth.js');
-const auth          = new Auth()
+const auth          = new Auth();
+
+const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
+const classRouter   = new ClassRouter();
 
 
     const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');

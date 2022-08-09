@@ -9,6 +9,7 @@ const router    = new Router({
 
 router
     .all("/:class/:action", async (ctx, next) => {
+        
         const Custom        = require(`${_dirname}/server/database/customApi/${ctx.params.class}.js`);
         const custom        = new Custom();
         let result          = {data: null};

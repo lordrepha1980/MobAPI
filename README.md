@@ -10,7 +10,7 @@ A node.js API
 4. Start server `pm2 start mobapi.config.js`
 
 ## Configuration
-Create a file in root with name config.json.
+Create a file in root with name config.json. Feel free to extend the structure for your own project
 
 Example
 
@@ -25,7 +25,13 @@ Example
             },
             "name": "MobAPI"
         },
-        "noDatabase": false
+        "auth": {
+            "enabled": true,
+            "secret": "insertYourSecretHere",
+            "options": { 
+                "expiresIn": "24h" 
+            }
+        }
     }
 
 MongoDB: connect to database withaut credentials remove key 'database.credentials'
@@ -39,6 +45,13 @@ MongoDB: connect to database withaut credentials remove key 'database.credential
         "user": "root",
         "password": "",
         "name": "test"
+    },
+    "auth": {
+        "enabled": true,
+        "secret": "insertYourSecretHere",
+        "options": { 
+            "expiresIn": "24h" 
+        }
     }
 
 possible database are ['MongoDB']
@@ -60,8 +73,7 @@ the main directory for developer.
 
     `/custom` In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
 
-    `system`In the  directory you can overwrite system endpoints 
-    
+    `system` In the  directory you can overwrite system endpoints
     possible endpoints are:
     `yourdomain/auth`  
 
@@ -97,12 +109,12 @@ Possible hooks in CUSTOMTEMPLATE
 - countBefore / countAfter
 
 Possible methodes in CUSTOMTEMPLATE
-- methodeConstructor
-- methodeUpdate
-- methodeFindeOne
-- methodeFind
-- methodeDelete
-- methodeCount
+- methodConstructor
+- methodUpdate
+- methodFindeOne
+- methodFind
+- methodDelete
+- methodCount
 
 ### Hook example
     {% block updateBefore %}{% endblock %}
@@ -110,8 +122,7 @@ Possible methodes in CUSTOMTEMPLATE
 ### items in Hook
 available item in Hook are:
     - result:   result from the database
-    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.
-    md#parameter)
+    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.md#parameter)
     - _dirname: root directory
 
 ## DATA API Calls
