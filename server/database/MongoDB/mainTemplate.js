@@ -5,7 +5,7 @@ const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 const DataClass     = new Data();
 
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
-const classRouter   = new ClassRouter();
+const mob           = new ClassRouter();
 
 {% block main %}{% endblock %}
 
