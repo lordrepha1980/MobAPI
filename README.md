@@ -227,10 +227,9 @@ this template is for custom/custom/:class request
     {% endblock %} 
 
 
-#Code-Examples
+# Code-Examples
 
 Google-API
-    
     /server/custom/custom/googleAPI.js
     
     {% extends _dirname + '/server/database/customTemplate.js' %} //required do not move this line
