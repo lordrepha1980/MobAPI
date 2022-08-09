@@ -230,8 +230,8 @@ this template is for custom/custom/:class request
 #Code-Examples
 
 1. Google-API
+    
     /server/custom/custom/googleAPI.js
-
     
     {% extends _dirname + '/server/database/customTemplate.js' %} //required do not move this line
 
