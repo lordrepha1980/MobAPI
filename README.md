@@ -254,6 +254,7 @@ Google-API
                 await drive.update({ table: 'user', auth: ctx.auth, body: body })
 
                 ctx.body = { data: 'Update Complete' }
+                return 
             } catch (error) {
                 console.log('custom getDirection error: ' + error)
             }
@@ -262,6 +263,18 @@ Google-API
         Now you can call url/custom/googleApi/getDirection
     {% endblock %}
     
-    
+Update user with google direction;
+
+    {% extends _dirname + '/server/database/' + database + '/mainTemplate.js' %}
+
+    {% block updateBefore %}
+        googleApi = mob.get('custom/googleApi');
+        
+        result = googleApi.getDirection(request)
+       
+        //modify user
+        request.body.googleData = result;
+        
+    {% endblock %}
 
 
