@@ -275,6 +275,7 @@ Update user with google direction;
         //modify user
         request.body.googleData = result;
         
+        //Now you can call url/data/user/update
     {% endblock %}
 
 
