@@ -149,22 +149,29 @@ this is the API for `https://url/data/` request.
     update
     count
     
-### Parameter
+## get/post Parameter
     {
-        table,
-        query,
+        table,      
+        query,      
         body,
         actions,
+        sort,
+        skip,
+        limit,
         auth,
         user
     }
     
-- table:    (String) Databasetable
-- query:    (Object) Select data from DB
-- body:     For Update new updated item
-- actions:  Hook for custom actions
-- auth:     (boolean) true / false is user login
-- user:     (Object) the user
+- table:                Required (String) Databasetable
+- query:                (Object) Select data from DB
+- body (only post):     For Update new updated item
+- actions (only post):  Hook for custom actions
+- sort:                 Sort result from the database
+- skip:                 Skip lines from the database
+- limit:                Max lines from database 
+- auth:                 Required (boolean) true / false is user login ( only server parameter )
+- user:                 (Object) the user ( only server parameter )
+- ctx:                  complete request from Koa
     
 ### Example:
     get first item from database with _id = '1'
@@ -227,5 +234,55 @@ this template is for custom/custom/:class request
     {% endblock %} 
 
 
+# Code-Examples
+
+Google-API
+    /server/custom/custom/googleAPI.js
+    
+    {% extends _dirname + '/server/database/customTemplate.js' %} //required do not move this line
+
+    {% block methodFunction %}
+        async getDirection ( { ctx } ) {
+            try {
+                //check is user registerd user, if not throw(). This is a internal method from MobAPI
+                await auth.check(ctx) 
+                
+                //get directions from googlemaps
+                
+                //update drive
+                const body = {
+                    lat: 'lat from Google'
+                    lat: 'lat from Google'
+                }
+                
+                //get API endpoint with internal method mob.get
+                const drive = mob.get('data/drive');
+                //write update to database
+                await drive.update({ table: 'user', auth: ctx.auth, body: body })
+
+                ctx.body = { data: 'Update Complete' }
+                return 
+            } catch (error) {
+                console.log('custom getDirection error: ' + error)
+            }
+        }
+        
+        Now you can call url/custom/googleApi/getDirection
+    {% endblock %}
+    
+Update user with google direction;
+
+    {% extends _dirname + '/server/database/' + database + '/mainTemplate.js' %}
+
+    {% block updateBefore %}
+        googleApi = mob.get('custom/googleApi');
+        
+        result = googleApi.getDirection(request)
+       
+        //modify user
+        request.body.googleData = result;
+        
+        //Now you can call url/data/user/update
+    {% endblock %}
 
 
