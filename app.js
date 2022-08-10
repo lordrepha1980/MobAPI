@@ -1,3 +1,5 @@
+( async () => {
+    console.log(    'init App: start');
 const Koa               = require("koa");
 const app               = new Koa();
 const fs                = require('fs');  
@@ -17,6 +19,9 @@ const session           = require('koa-session')
 
 const router            = new Router();
 
+const config            = require(_dirname + "/config");
+const port              = normalizePort(config.serverPort || "3000");
+
 app.use( koaBody() );
 
 router.use( '/', async ( ctx, next ) => { 
@@ -32,11 +37,16 @@ router.use( '/', async ( ctx, next ) => {
 
     await auth()
     await next()
-    
+
 });
 
-const main             = require("./server/app/main");
-main.moduleLoader()
+const main   = require(_dirname + '/server/app/main');
+
+await main.checkStructure();
+await main.generateTables();
+
+main.moduleLoader();
+
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
 const login             = require("./routes/login");
@@ -46,9 +56,35 @@ router.use( custom.routes() );
 router.use( login.routes() );
 app.use(session({}, app));
 
-
 app
-  .use(router.routes())
-  .use(router.allowedMethods());
+    .use(router.routes())
+    .use(router.allowedMethods());
+
+app.listen(port, async () => {
+    console.log( "Server starts on port:" + port );
+
+    //generate tables
+    // if (!config.noDatabase)
+    //     main.initDatabase();
+});
+
+function normalizePort(val) {
+    const port = parseInt(val, 10);
+  
+    if (isNaN(port)) {
+      // named pipe
+      return val;
+    }
+  
+    if (port >= 0) {
+      // port number
+      return port;
+    }
+  
+    return false;
+  }
 
 module.exports = app;
+} )();
+
+

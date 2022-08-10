@@ -3,7 +3,7 @@ const debug         = require('debug')('app:server:database:MongoDB:Data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 
 module.exports = class Data {
     

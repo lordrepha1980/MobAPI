@@ -1,6 +1,6 @@
 "use strict";
 const _dirname  = process.cwd()
-const config    = require( _dirname + "/config.json");
+const config    = require( _dirname + "/config");
 
 module.exports = class Connection { 
         

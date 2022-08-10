@@ -2,7 +2,7 @@
 const debug         = require('debug')('app:server:database:classRouter');
 const _dirname      = process.cwd();
 const fs            = require('fs');
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 
 module.exports = class Secret {
     

@@ -28,7 +28,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                return error
+                console.log(error)
+                throw ( error )
             }
             
         }
@@ -45,7 +46,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                return error
+                console.log(error)
+                throw ( error )
             }
         }
     {% endblock %}
@@ -61,7 +63,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                return error
+                console.log(error)
+                throw ( error )
             }
         }
     {% endblock %}
@@ -77,7 +80,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                return error
+                console.log(error)
+                throw ( error )
             }
         }
     {% endblock %}
@@ -93,7 +97,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                return error
+                console.log(error)
+                throw ( error )
             }
         }
     {% endblock %}

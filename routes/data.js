@@ -1,8 +1,7 @@
 const _dirname  = process.cwd()
 const Router    = require('@koa/router');
 
-const config    = require("../config.json");
-
+const config    = require("../config");
 
 const router    = new Router({
     prefix: '/data'

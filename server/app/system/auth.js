@@ -3,7 +3,7 @@ const debug         = require('debug')('app:server:app:system:auth');
 const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 const jwt           = require('jsonwebtoken');
 
 const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');

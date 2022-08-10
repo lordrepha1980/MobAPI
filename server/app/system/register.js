@@ -3,9 +3,9 @@ const debug         = require('debug')('app:server:app:system:register');
 const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 
-const bycryptSalt   = 10;
+const bcryptSalt   = config.bcrypt.saltRounds;
 
 const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
 const user = new User()
@@ -24,7 +24,7 @@ module.exports = class Register {
             if ( userExists )
                 throw ("User already exists");
 
-            const hash = await bcrypt.hash( bodyParse.body.password, bycryptSalt )
+            const hash = await bcrypt.hash( bodyParse.body.password, bcryptSalt )
             
             if ( hash )
                 bodyParse.body.password = hash

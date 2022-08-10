@@ -1,6 +1,6 @@
 const _dirname              = process.cwd();
 const tables                = require(_dirname + "/server/database/tables.json");
-const config                = require(_dirname + "/config.json");
+const config                = require(_dirname + "/config");
 const dbType                = config.database.type;
 const fs                    = require('fs');  
 const fsPromise             = require('fs/promises');    

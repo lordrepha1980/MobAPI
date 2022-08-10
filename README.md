@@ -10,7 +10,7 @@ A node.js API
 4. Start server `pm2 start mobapi.config.js`
 
 ## Configuration
-Create a file in root with name config.json. Feel free to extend the structure for your own project
+Create a file in root with name config.js. Feel free to extend the structure for your own project
 
 Example
 
