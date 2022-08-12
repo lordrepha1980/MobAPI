@@ -7,7 +7,7 @@ const config = {
         "type": "MongoDB",
         "host": process.env.DB_HOST,
         "port": process.env.DB_PORT,
-        "crediantials": {
+        "credentials": {
             "username": process.env.DB_USERNAME,
             "password": process.env.DB_PASSWORD
         },
