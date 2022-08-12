@@ -29,7 +29,7 @@ const config = {
     },
     "module": {
         "useSignin":    true,
-        "useRegister":  true
+        "useRegister":  false
     }
 }
 

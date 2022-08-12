@@ -6,9 +6,12 @@ const prod          = process.env.NODE_ENV !== 'production';
 const config        = require(_dirname + '/config');
 const jwt           = require('jsonwebtoken');
 
-const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
-const user = new User()
-
+try{
+    const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
+    const user = new User()
+}
+catch(error) {
+}
 module.exports = class Login {
     
     constructor(  ) {

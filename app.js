@@ -1,6 +1,7 @@
 ( async () => {
     console.log(    'init App: start');
 const Koa               = require("koa");
+const cors              = require('@koa/cors');
 const app               = new Koa();
 const fs                = require('fs');  
 
@@ -12,6 +13,7 @@ else
 const passport          = require('koa-passport')
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
 const Router            = require('@koa/router');
 const koaBody           = require('koa-bodyparser');

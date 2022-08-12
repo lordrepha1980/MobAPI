@@ -8,14 +8,14 @@ const router    = new Router({
 /* GET users listing. */
 
 router
-    .all("/:class/:action", async (ctx, next) => {
+    .post("/:class/:action", async (ctx, next) => {
         
         const Custom        = require(`${_dirname}/server/database/customApi/${ctx.params.class}.js`);
         const custom        = new Custom();
         let result          = {data: null};
 
         if ( custom[ctx.params.action] )
-            result.data = await custom[ctx.params.action]( { query: ctx.params.query, ctx } )
+            result.data = await custom[ctx.params.action]( { body: ctx.request.body, ctx } )
         else {
             console.error( 'No action found. Called action: ', ctx.params.action )
 

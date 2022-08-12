@@ -7,8 +7,13 @@ const config        = require(_dirname + '/config');
 
 const bcryptSalt   = config.bcrypt.saltRounds;
 
-const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
-const user = new User()
+try{
+    const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
+    const user = new User()
+}
+catch(error) {
+
+}
 
 module.exports = class Register {
     
@@ -17,6 +22,7 @@ module.exports = class Register {
     }
 
     async register ( bodyParse ) { 
+
         config.debug.extend && debug('register params: ', bodyParse );
         try {
             const {data: userExists} = await user.findOne({ table: 'user', query: { username: bodyParse.body.username }, auth: true, actions: { register: true, auth: true } });
