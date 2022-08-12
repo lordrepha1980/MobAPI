@@ -4,4 +4,5 @@ server/custom/custom/*
 server/custom/data/*
 server/database/customApi/*
 server/database/MongoDB/dataApi/*
+server/tables.json
 public/*
