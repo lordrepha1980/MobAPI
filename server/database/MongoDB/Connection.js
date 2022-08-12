@@ -15,6 +15,7 @@ module.exports = class Connection {
             if ( config.database.credentials )
                 url               = `mongodb://${config.database.credentials.user}:${config.database.credentials.password}@${config.database.host}:${config.database.port}/${config.database.name}`;
 
+            config.debug.extend && debug('MongoDB Connect: ', url );
             const client            = new MongoClient(url);
 
             // Database Name
