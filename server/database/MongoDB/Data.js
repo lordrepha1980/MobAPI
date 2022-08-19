@@ -114,10 +114,12 @@ module.exports = class Data {
 
     async find ( request ) {
         try {
+         
             if ( !request.auth )
                 throw('Unauthorized')
 
             config.debug.extend && debug('find params: ', request );
+            
             const db = await this.initDb();
 
             const result = await db.collection(request.table).find(

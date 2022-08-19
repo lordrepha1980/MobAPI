@@ -13,7 +13,7 @@ module.exports = class Connection {
             const { MongoClient }   = require('mongodb');
             let url               = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
 
-            if ( config.database.credentials )
+            if ( config.database.credentials && config.database.credentials.username && config.database.credentials.password )
                 url               = `mongodb://${config.database.credentials.username}:${config.database.credentials.password}@${config.database.host}:${config.database.port}/${config.database.name}`;
 
             config.debug.extend && debug('MongoDB Connect: ', url );

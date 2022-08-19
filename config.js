@@ -3,6 +3,7 @@ const dotenv            = require('dotenv')
 dotenv.config({ path: './.env' })
 
 const config = {
+    "publicPath": "./public",
     "database": {
         "type": "MongoDB",
         "host": process.env.DB_HOST,

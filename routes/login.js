@@ -45,7 +45,7 @@ if ( config.module.useSignin ) {
             ctx.body    = { data: { token: signinDone } };
         })
 
-        router
+    router
         .post("/", async (ctx) => {
 
             const token = await login.checkUser(ctx.request.body);
@@ -54,6 +54,16 @@ if ( config.module.useSignin ) {
             ctx.body    = token ? { data: { token } } : 'User not found';
             
         })
+
+    // router
+    //     .get("/", async (ctx) => {
+
+    //         const token = await login.checkUser(ctx.request.body);
+    
+    //         ctx.status  = token.error ? 400 : 200;
+    //         ctx.body    = token ? { data: { token } } : 'User not found';
+            
+    //     })
     
     router
         .get("/logout", async (ctx) => {

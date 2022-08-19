@@ -1,5 +1,7 @@
 ( async () => {
-    console.log(    'init App: start');
+console.log(    'init App: start');
+
+var serve               = require('koa-static');
 const Koa               = require("koa");
 const cors              = require('@koa/cors');
 const app               = new Koa();
@@ -11,19 +13,22 @@ else
     require('./server/app/system/passportStrategy');
     
 const passport          = require('koa-passport')
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
 
+
 const Router            = require('@koa/router');
 const koaBody           = require('koa-bodyparser');
-const session           = require('koa-session')
+const session           = require('koa-session');
 
 const router            = new Router();
 
 const config            = require(_dirname + "/config");
 const port              = normalizePort(config.serverPort || "3000");
 
+app.use(serve(config.publicPath || './public'));
 app.use( koaBody() );
 
 router.use( '/', async ( ctx, next ) => { 
@@ -51,11 +56,13 @@ main.moduleLoader();
 
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
+const static            = require("./routes/static");
 const login             = require("./routes/login");
 
 router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
+router.use( static.routes() );
 app.use(session({}, app));
 
 app
