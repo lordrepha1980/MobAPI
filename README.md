@@ -15,26 +15,46 @@ Create a file in root with name config.js. Feel free to extend the structure for
 Example
 
     {
+        "publicPath": "./public",
         "database": {
             "type": "MongoDB",
-            "host": "localhost",
-            "port": 1337,
-            "crediantials": {
-                "username": "",
-                "password": ""
+            "host": process.env.DB_HOST,
+            "port": process.env.DB_PORT,
+            "credentials": {
+                "username": process.env.DB_USERNAME,
+                "password": process.env.DB_PASSWORD
             },
             "name": "MobAPI"
         },
+        "serverPort": process.env.SERVER_PORT,
         "auth": {
             "enabled": true,
-            "secret": "insertYourSecretHere",
+            "secret": process.env.AUTH_SECRET,
             "options": { 
                 "expiresIn": "24h" 
             }
+        },
+        "bcrypt": {
+            "saltRounds": 10 
+        },
+        "debug": {
+            "extend": false
+        },
+        "module": {
+            "useSignin":    true,
+            "useRegister":  false
         }
     }
 
-MongoDB: connect to database withaut credentials remove key 'database.credentials'
+- publicPath - default 'public'. This is the directory for index.html
+- database - database connection definition
+- auth - standart MobAPI auth service (passports JWT)
+- serverPort - port for server
+- bcrypt - definition for standart methode encrypt a password
+- debug - enable extend log output
+- module - enable standard modules
+
+MongoDB: connect to database without credentials remove key 'database.credentials'
 
 ### database init:
 
@@ -194,7 +214,7 @@ this is the API for `https://url/data/` request.
 ## CUSTOM API Calls
 this is the API for `https://url/custom/` request.
 
-## all (get, post, put ...)
+## post
     everything what you want
     
 ### Example:
@@ -205,11 +225,11 @@ this is the API for `https://url/custom/` request.
 ### Parameter
     {
         ctx
-        query
+        body
     }
     
 - ctx:      complete request from Koa
-- query:    (Object) Select data from DB
+- body:     ctx.request.body
     
 
 #Templates
