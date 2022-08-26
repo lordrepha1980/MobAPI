@@ -71,9 +71,8 @@ const main = {
             './server/database/customApi',
             './server/database/MongoDB/dataApi'
         ];
-
         for (let i = 0; i < checks.length; i++)
-            fs.mkdirSync(checks[i], {recursive: true})
+            fs.mkdirSync(checks[i], {recursive: true, mode: '777'})
     },
     generateTables: async function() {
         //generate tables für DATA

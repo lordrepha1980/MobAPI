@@ -44,7 +44,7 @@ module.exports = class Data {
 
             const res = await db.collection(request.table).updateOne(
                 request.query || { _id: request.body._id }, 
-                { $set: 
+                request.cmd ? request.cmd : { $set: 
                     request.body || {}
                 },
                 request.options || { upsert: true }
