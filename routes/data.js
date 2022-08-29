@@ -7,7 +7,12 @@ const router    = new Router({
     prefix: '/data'
 });
 
-/* GET users listing. */
+let io;
+
+router.init  = function( socket ) {
+    io    = socket;
+};
+
 router
     .get("/:table/:action", async (ctx, next) => {
    
@@ -24,7 +29,8 @@ router
                 limit:      ctx.params.limit,
                 auth:       ctx.auth,
                 user:       ctx.user ? ctx.user : null,
-                ctx
+                ctx,
+                io
         } )
         else
             console.error( 'No action found. Called action: ', ctx.params.action )
@@ -48,7 +54,8 @@ router
                 limit:      ctx.request.body.limit,
                 auth:       ctx.auth,
                 user:       ctx.user ? ctx.user : null,
-                ctx
+                ctx, 
+                io
             } )
         } else {
             const err = 'No action found. Called action: ' + ctx.params.action

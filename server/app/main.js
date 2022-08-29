@@ -84,7 +84,7 @@ const main = {
             if ( fs.existsSync(`./server/custom/data/${key}.js`) )
                 Template                = `./server/custom/data/${key}.js`;
 
-            console.log('render Template (DATA): ', Template); 
+            console.log('render Template (DATA): ', key); 
             const template              = Nunjucks.render(Template, { table: key, database: dbType, _dirname });
             //write templates
 
@@ -102,7 +102,7 @@ const main = {
                 files.forEach(file => {
 
                     const Template                = `./server/custom/custom/${file}`;
-                    console.log('render Template (CUSTOM): ', Template); 
+                    console.log('render Template (CUSTOM): ', file); 
 
                     const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
                     //write templates
