@@ -2,6 +2,7 @@
 const debug         = require('debug')('app:server:database:classRouter');
 const _dirname      = process.cwd();
 const fs            = require('fs');
+const Connection    = require(_dirname + '/server/database/MongoDB/Connection');
 const config        = require(_dirname + '/config');
 
 module.exports = class Secret {
@@ -30,6 +31,18 @@ module.exports = class Secret {
                 return new ClassRouter();
             else
                 return null;
+        } 
+        catch (error) {
+            console.error(error);
+            return 'Database error: ' + error
+        }
+    }
+
+    db () { 
+        try{
+            const connection = new Connection();
+            
+            return connection.init();
         } 
         catch (error) {
             console.error(error);
