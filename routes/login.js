@@ -42,7 +42,7 @@ if ( config.module.useSignin ) {
             const signinDone = await signin.signin( ctx.request.body );
     
             ctx.status  = signinDone.error ? 400 : 200;
-            ctx.body    = signinDone.error ? { error: signinDone } : { data: { token: signinDone } };
+            ctx.body    = signinDone.error ? { error: signinDone.error } : { data: { token: signinDone } };
         })
 
     router
