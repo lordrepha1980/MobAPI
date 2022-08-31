@@ -5,7 +5,7 @@ const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const config        = require(_dirname + '/config');
 const jwt           = require('jsonwebtoken');
-const user          = null;
+let user          = null;
 try{
     const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
     user = new User()
