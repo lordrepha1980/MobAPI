@@ -36,6 +36,7 @@ module.exports = class Data {
                     request.query = {}
 
                 request.query._id = request.body._id;
+                delete request.body._id;
             } else {
                 const id = uuid.v4();
                 console.error('No _id found in body generate ID: ', id);
