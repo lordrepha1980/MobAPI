@@ -52,7 +52,7 @@ module.exports = class Data {
                     { _id: request.body._id }
                 );
 
-                return { data: result, inserted: res.upsertedId ? true : undefined }
+                return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
             }
 
             throw({ error: 'Save abort' })
