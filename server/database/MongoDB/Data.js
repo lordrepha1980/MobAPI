@@ -21,30 +21,26 @@ module.exports = class Data {
 
     async update ( request ) {
         try{
-            if ( !request.auth )
-                throw('Unauthorized')
-
             config.debug.extend && debug('update params: ', request );
 
             if ( !request.auth )
                 throw('Unauthorized')
 
-            const db = await this.initDb();
-            
-            if ( request.body && request.body._id ) {
-                if ( !request.query )
-                    request.query = {}
+            if ( !request.body )
+                throw('No body found')
 
-                request.query._id = request.body._id;
-                delete request.body._id;
-            } else {
+            const db    = await this.initDb();
+            
+            if ( request.body && !request.body._id ) {
                 const id = uuid.v4();
                 console.error('No _id found in body generate ID: ', id);
                 request.body._id    = id;
             }
 
+            let query   = request.query || { _id: request.body._id }
+
             const res = await db.collection(request.table).updateOne(
-                request.query || { _id: request.body._id }, 
+                query, 
                 request.cmd ? request.cmd : { $set: 
                     request.body || {}
                 },
