@@ -105,7 +105,9 @@ module.exports = class Data {
                 request.query
             );
 
-            return { data: result }
+            const count = await db.collection(request.table).count();
+
+            return { data: result, total: count }
         } catch (error) {
             console.error(error);
             return { error };
@@ -130,7 +132,9 @@ module.exports = class Data {
             .limit( request.limit || 0 )
             .toArray();
 
-            return { data: result }
+            const count = await db.collection(request.table).count();
+
+            return { data: result, total: count }
         } catch (error) {
             console.error(error);
             return { error };
