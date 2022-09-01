@@ -37,6 +37,9 @@ module.exports = class Data {
                 request.body._id    = id;
             }
 
+            if ( request.query && request.query._id )
+                request.body._id = request.query._id;
+
             let query   = request.query || { _id: request.body._id }
 
             const res = await db.collection(request.table).updateOne(
