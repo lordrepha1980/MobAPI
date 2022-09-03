@@ -307,11 +307,13 @@ Update user with google direction;
 
 # Default-Authentication (JWT)
 Activate the Authentication in config.js
+
     "module": {
         "useSignin":    true
     }
 
 The signin/login endpoints are:
+
     POST
     /auth/signin 
     or
@@ -332,6 +334,7 @@ The signin/login endpoints are:
 You need a user database table with a username and password field.
 
 The check is token valid endpoints:
+
     POST
     /auth/check
 
@@ -344,6 +347,7 @@ The check is token valid endpoints:
 every route with /data/* check if login valid. It is not possible get or set data from this enpoint without login
 
 The logout endpoints:
+
     POST
     /auth/logout
 for JWT-Token is this endpoint not in use
