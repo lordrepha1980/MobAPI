@@ -305,4 +305,55 @@ Update user with google direction;
         //Now you can call url/data/user/update
     {% endblock %}
 
+# Default-Authentication (JWT)
+Activate the Authentication in config.js
+    "module": {
+        "useSignin":    true
+    }
+
+The signin/login endpoints are:
+    POST
+    /auth/signin 
+    or
+    /auth/login
+
+    //request
+    { 
+        body: {
+            username,
+            password
+        }
+    }
+
+    //response
+    {
+        data: jwt-token string
+    }
+You need a user database table with a username and password field.
+
+The check is token valid endpoints:
+    POST
+    /auth/check
+
+    //request
+    send jwt token in header
+    headers: { "Authorization": `Bearer ${token}` }
+
+    //response
+    true / false
+every route with /data/* check if login valid. It is not possible get or set data from this enpoint without login
+
+The logout endpoints:
+    POST
+    /auth/logout
+for JWT-Token is this endpoint not in use
+
+Generate a secret keys for a salt or whatever.
+    GET
+    /secret
+
+
+
+
+
 

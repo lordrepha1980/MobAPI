@@ -92,16 +92,12 @@ if ( config.module.useRegister ) {
         })
 }
 
-
-
 router
-    .all("/secret", async (ctx) => {
+    .get("/secret", async (ctx) => {
         const secrets   = await secret.generate()
 
         ctx.status      = secrets.error ? 400 : 200;
         ctx.body        = secrets
     })
-
-
 
 module.exports = router;
