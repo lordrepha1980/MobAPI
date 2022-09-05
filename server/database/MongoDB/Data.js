@@ -4,6 +4,12 @@ const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
+import { z }        from "zod";
+
+const update = {
+    auth:   z.boolean(),
+    body:   z.object({})
+}
 
 module.exports = class Data {
     
@@ -23,11 +29,13 @@ module.exports = class Data {
         try{
             config.debug.extend && debug('update params: ', request );
 
-            if ( !request.auth )
-                throw('Unauthorized')
+            // if ( !request.auth )
+            //     throw('Unauthorized')
 
-            if ( !request.body )
-                throw('No body found')
+            // if ( !request.body )
+            //     throw('No body found')
+
+            update.parse(request)
 
             const db    = await this.initDb();
             
