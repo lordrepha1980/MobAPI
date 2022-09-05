@@ -176,7 +176,9 @@ module.exports = class Data {
             .limit( request.limit || 0 )
             .toArray();
 
-            const count = await db.collection(request.table).count();
+            const count = await db.collection(request.table).find(
+                request.query
+            ).count();
 
             return { data: result, total: count }
         } catch (error) {
