@@ -4,12 +4,45 @@ const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
-import { z }        from "zod";
+const z             = require("zod");
 
-const update = {
-    auth:   z.boolean(),
-    body:   z.object({})
-}
+const update = z.object({
+    auth:       z.boolean(),
+    table:      z.string(),
+    body:       z.object({}),
+    query:      z.object({
+        _id:        z.string().optional()
+    }).optional(),
+    cmd:        z.object().optional(),
+    options:    z.object().optional(),
+});
+
+const _delete = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({})
+})
+
+const findOne = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({})
+})
+
+const find = z.object({
+    auth:       z.boolean(),
+    query:      z.object({}),
+    table:      z.string(),
+    sort:       z.object({}).optional(),
+    skip:       z.number().optional(),
+    limit:      z.number().optional()
+})
+
+const count = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({})
+})
 
 module.exports = class Data {
     
@@ -29,13 +62,10 @@ module.exports = class Data {
         try{
             config.debug.extend && debug('update params: ', request );
 
-            // if ( !request.auth )
-            //     throw('Unauthorized')
-
-            // if ( !request.body )
-            //     throw('No body found')
-
             update.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
 
             const db    = await this.initDb();
             
@@ -76,15 +106,17 @@ module.exports = class Data {
 
     async delete ( request ) {
         try{
-            if ( !request.auth )
-                throw('Unauthorized')
-
             config.debug.extend && debug('delete params: ', request );
+
+            _delete.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
 
             const db = await this.initDb();
 
-            if ( !request.query || Object.keys(request.query).length === 0 )
-                throw('No query found')
+            if ( Object.keys(request.query).length === 0 )
+                throw('Query Empty')
 
             const res = await db.collection(request.table).deleteOne(
                 request.query
@@ -103,10 +135,13 @@ module.exports = class Data {
 
     async findOne ( request ) {
         try {
-            if ( !request.auth )
-                throw('Unauthorized')
-
             config.debug.extend && debug('findOne params: ', request );
+
+            findOne.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
             const db = await this.initDb();
 
             const result = await db.collection(request.table).findOne(
@@ -124,11 +159,12 @@ module.exports = class Data {
 
     async find ( request ) {
         try {
-         
-            if ( !request.auth )
-                throw('Unauthorized')
-
             config.debug.extend && debug('find params: ', request );
+
+            find.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
             
             const db = await this.initDb();
 
@@ -151,10 +187,13 @@ module.exports = class Data {
 
     async count ( request ) {
         try {
-            if ( !request.auth )
-                throw('Unauthorized')
-
             config.debug.extend && debug('count params: ', request );
+
+            count.parse(request);
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
             const db = await this.initDb();
 
             const result = await db.collection(request.table).count(
