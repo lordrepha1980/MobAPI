@@ -71,7 +71,6 @@ module.exports = class Data {
             
             if ( request.body && !request.body._id ) {
                 const id = uuid.v4();
-                console.error('No _id found in body generate ID: ', id);
                 request.body._id    = id;
             }
 

@@ -20,7 +20,7 @@ module.exports = class Login {
     }
 
     async checkUser ( bodyParse ) { 
-        config.debug.extend && debug('checkUser params: ', ctx );
+        config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: result } = await user.findOne(
                 { table: 'user', auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
