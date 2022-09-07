@@ -13,8 +13,8 @@ const update = z.object({
     query:      z.object({
         _id:        z.string().optional()
     }).optional(),
-    cmd:        z.object().optional(),
-    options:    z.object().optional(),
+    cmd:        z.object({}).optional(),
+    options:    z.object({}).optional(),
 });
 
 const _delete = z.object({ 
