@@ -63,7 +63,6 @@ main.moduleLoader();
 
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
-const static            = require("./routes/static");
 const login             = require("./routes/login");
 
 if ( sock ) {
@@ -75,7 +74,6 @@ if ( sock ) {
 router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
-router.use( static.routes() );
 app.use(session({}, app));
 
 app
