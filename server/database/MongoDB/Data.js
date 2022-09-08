@@ -1,105 +1,246 @@
 "use strict";
-const debug         = require('debug')('app:server:app:system:auth');
-const bcrypt        = require('bcrypt');
+const debug         = require('debug')('app:server:database:MongoDB:Data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
+const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
-const jwt           = require('jsonwebtoken');
-const { match } = require( '../../../routes/data' );
+const z             = require("zod");
 
-const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
-const mob           = new ClassRouter();
-module.exports = class Rights {
+const main          = require(_dirname + '/server/app/main');
+const Rights        = require(_dirname + '/server/app/system/rights.js');
+const rights        = new Rights();
+
+const update = z.object({
+    auth:       z.boolean(),
+    table:      z.string(),
+    body:       z.object({}),
+    query:      z.object({
+        _id:        z.string().optional()
+    }).optional(),
+    cmd:        z.object({}).optional(),
+    options:    z.object({}).optional(),
+    user:       z.object({}).optional()
+});
+
+const _delete = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
+
+const findOne = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
+
+const find = z.object({
+    auth:       z.boolean(),
+    query:      z.object({}),
+    table:      z.string(),
+    sort:       z.object({}).optional(),
+    skip:       z.number().optional(),
+    limit:      z.number().optional(),
+    user:       z.object({}).optional()
+})
+
+const count = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
+
+module.exports = class Data {
     
     constructor(  ) {
 
     }
-    //schema table:methode
-    async check ( bodyParse, bodyMethode ) { 
-        const userApi       = await mob.get('data/user')
-        const rightsApi     = await mob.get('data/rights')
 
-        config.debug.extend && debug('checkUser params: ', bodyParse );
+    async initDb ( ) {
+        const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
+        let connection          = new Connection();
+        const db                = await connection.init();     
+        return db;
+    }
+
+
+    async update ( request ) {
         try{
-            const { data: usr } = await userApi.findOne(
-                { table: 'user', auth: true, noCheck: true, query: { _id: bodyParse?.user?._id || null } }
+            config.debug.extend && debug('update params: ', request );
+
+            update.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
+            
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'update')
+                if ( error )
+                    throw(error)
+            }
+
+            const db    = await this.initDb();
+            
+            if ( request.body && !request.body._id ) {
+                const id = uuid.v4();
+                request.body._id    = id;
+            }
+
+            if ( request.query && request.query._id )
+                request.body._id = request.query._id;
+
+            let query   = request.query || { _id: request.body._id }
+
+            const res = await db.collection(request.table).updateOne(
+                query, 
+                request.cmd ? request.cmd : { $set: 
+                    request.body || {}
+                },
+                request.options || { upsert: true }
             );
 
-            let rights = [];
+            if ( res.acknowledged ) {
+                const result = await db.collection(request.table).findOne(
+                    { _id: request.body._id }
+                );
 
-            if ( usr?.rights ) {
-                for( let right of usr.rights ) {
-                    const { data: result } = await rightsApi.findOne(
-                        { table: 'rights', noCheck: true, auth: true, query: { group: right } }
-                    );
-
-                    rights = rights.concat(result?.permission || []);
-
-                }
+                return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
             }
 
-            function checkAsterisk ( string ) {         
-                let result = string.indexOf('*')
-                if ( result > -1 )
-                    return true;
-            }
-
-            function checkEndsWithAsterisk ( string ) {
-                pattern = `${bodyParse.table}:*`   
-                result = string.indexOf(pattern)
-                if ( result > -1 )
-                    return true;
-            }
-
-            function checkMethode ( string ) {
-                pattern = `${bodyParse.table}:*`   
-                result = string.indexOf(pattern)
-                if ( result > -1 )
-                    return true;
-            }
-
-            //check if table allowed    
-            const filterResult = rights.filter( (right) => {
-                const rightsArr = right.split(':');
-
-                const table         = rightsArr[0];
-                const methode       = rightsArr[1];
-
-                let tableStatus   = false;
-                let methodeStatus = false;
-
-                // const record        = rightsArr[2];
-                // const field         = rightsArr[3];
-
-                if ( table ) {
-                    if ( checkAsterisk(table) )
-                        return true;
-
-                    if ( table.indexOf(bodyParse.table) > -1 )
-                        tableStatus = true;
-                }
-
-                if ( methode && tableStatus ) {
-                    if ( checkAsterisk(methode) )
-                        return true;
-    
-                    if ( methode.indexOf(bodyMethode) > -1 ) {
-                        methodeStatus = true;
-                        return true;
-                    }
-                }
-
-                return false
-            } );
-
-            config.debug.extend && debug('check rights result: ', filterResult );
-            
-            if ( filterResult.length === 0 )
-                throw('not enough rights');
-            else
-                return true;
+            throw({ error: 'Save abort' })
         } 
         catch (error) {
+            return { error };
+        }
+    }
+
+    async delete ( request ) {
+        try{
+            config.debug.extend && debug('delete params: ', request );
+
+            _delete.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'delete')
+                if ( error )
+                    throw(error)
+            }
+
+            const db = await this.initDb();
+
+            if ( Object.keys(request.query).length === 0 )
+                throw('Query Empty')
+
+            const res = await db.collection(request.table).deleteOne(
+                request.query
+            );
+
+            if ( res.acknowledged )
+                return { data: res.deletedCount }
+
+            throw(res)
+        } 
+        catch (error) {
+            return { error };
+        }
+    }
+
+    async findOne ( request ) {
+        console.log('findOne', request.table, request.noCheck)
+        try {
+            config.debug.extend && debug('findOne params: ', request );
+
+            findOne.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
+            if ( config.module.useRights && !request.noCheck ) {
+                console.log(request.table, 'nicht drin')
+                const { error } = await rights.check(request, 'find')
+                if ( error )
+                    throw(error)
+            }
+
+            const db = await this.initDb();
+
+            const result = await db.collection(request.table).findOne(
+                request.query
+            );
+
+            const count = await db.collection(request.table).count();
+
+            return { data: result, total: count }
+        } catch (error) {
+            return { error };
+        }
+    }
+
+    async find ( request ) {
+        console.log('find', request.table, request.noCheck)
+        try {
+            config.debug.extend && debug('find params: ', request );
+
+            find.parse(request)
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'find')
+                if ( error )
+                    throw(error)
+            }
+            
+            const db = await this.initDb();
+
+            const result = await db.collection(request.table).find(
+                request.query
+            )
+            .sort( request.sort || null )
+            .skip( request.skip || 0 )
+            .limit( request.limit || 0 )
+            .toArray();
+
+            const count = await db.collection(request.table).find(
+                request.query
+            ).count();
+
+            return { data: result, total: count }
+        } catch (error) {
+            return { error };
+        }
+    }
+
+    async count ( request ) {
+        try {
+            config.debug.extend && debug('count params: ', request );
+
+            count.parse(request);
+
+            if ( !request.auth )
+                throw('Not Authorized')
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'count')
+                if ( error )
+                    throw(error)
+            }
+
+            const db = await this.initDb();
+
+            const result = await db.collection(request.table).count(
+                request.query
+            );
+
+            return { data: result }
+        } catch (error) {
             return { error };
         }
     }
