@@ -1,233 +1,105 @@
 "use strict";
-const debug         = require('debug')('app:server:database:MongoDB:Data');
+const debug         = require('debug')('app:server:app:system:auth');
+const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
-const z             = require("zod");
+const jwt           = require('jsonwebtoken');
+const { match } = require( '../../../routes/data' );
 
-const main          = require(_dirname + '/server/app/main');
-const rights         = new (main.getModule('/system/checkRights.js'))();
-
-
-const update = z.object({
-    auth:       z.boolean(),
-    table:      z.string(),
-    body:       z.object({}),
-    query:      z.object({
-        _id:        z.string().optional()
-    }).optional(),
-    cmd:        z.object({}).optional(),
-    options:    z.object({}).optional(),
-    user:       z.object({}).optional()
-});
-
-const _delete = z.object({ 
-    auth:       z.boolean(),
-    table:      z.string(),
-    query:      z.object({}),
-    user:       z.object({}).optional()
-})
-
-const findOne = z.object({ 
-    auth:       z.boolean(),
-    table:      z.string(),
-    query:      z.object({}),
-    user:       z.object({}).optional()
-})
-
-const find = z.object({
-    auth:       z.boolean(),
-    query:      z.object({}),
-    table:      z.string(),
-    sort:       z.object({}).optional(),
-    skip:       z.number().optional(),
-    limit:      z.number().optional(),
-    user:       z.object({}).optional()
-})
-
-const count = z.object({ 
-    auth:       z.boolean(),
-    table:      z.string(),
-    query:      z.object({}),
-    user:       z.object({}).optional()
-})
-
-module.exports = class Data {
+const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
+const mob           = new ClassRouter();
+module.exports = class Rights {
     
     constructor(  ) {
 
     }
+    //schema table:methode
+    async check ( bodyParse, bodyMethode ) { 
+        const userApi       = await mob.get('data/user')
+        const rightsApi     = await mob.get('data/rights')
 
-    async initDb ( ) {
-        const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
-        let connection          = new Connection();
-        const db                = await connection.init();     
-        return db;
-    }
-
-
-    async update ( request ) {
+        config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
-            config.debug.extend && debug('update params: ', request );
+            const { data: usr } = await userApi.findOne(
+                { table: 'user', auth: true, noCheck: true, query: { _id: bodyParse?.user?._id || null } }
+            );
 
-            update.parse(request)
+            let rights = [];
 
-            if ( !request.auth )
-                throw('Not Authorized')
-            
-            if ( config.module.useRightSystem && !request.noCheck )
-                rights.check(request.user)
+            if ( usr?.rights ) {
+                for( let right of usr.rights ) {
+                    const { data: result } = await rightsApi.findOne(
+                        { table: 'rights', noCheck: true, auth: true, query: { group: right } }
+                    );
 
-            const db    = await this.initDb();
-            
-            if ( request.body && !request.body._id ) {
-                const id = uuid.v4();
-                request.body._id    = id;
+                    rights = rights.concat(result?.permission || []);
+
+                }
             }
 
-            if ( request.query && request.query._id )
-                request.body._id = request.query._id;
-
-            let query   = request.query || { _id: request.body._id }
-
-            const res = await db.collection(request.table).updateOne(
-                query, 
-                request.cmd ? request.cmd : { $set: 
-                    request.body || {}
-                },
-                request.options || { upsert: true }
-            );
-
-            if ( res.acknowledged ) {
-                const result = await db.collection(request.table).findOne(
-                    { _id: request.body._id }
-                );
-
-                return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
+            function checkAsterisk ( string ) {         
+                let result = string.indexOf('*')
+                if ( result > -1 )
+                    return true;
             }
 
-            throw({ error: 'Save abort' })
-        } 
-        catch (error) {
-            console.error(error);
-            return { error };
-        }
-    }
+            function checkEndsWithAsterisk ( string ) {
+                pattern = `${bodyParse.table}:*`   
+                result = string.indexOf(pattern)
+                if ( result > -1 )
+                    return true;
+            }
 
-    async delete ( request ) {
-        try{
-            config.debug.extend && debug('delete params: ', request );
+            function checkMethode ( string ) {
+                pattern = `${bodyParse.table}:*`   
+                result = string.indexOf(pattern)
+                if ( result > -1 )
+                    return true;
+            }
 
-            _delete.parse(request)
+            //check if table allowed    
+            const filterResult = rights.filter( (right) => {
+                const rightsArr = right.split(':');
 
-            if ( !request.auth )
-                throw('Not Authorized')
+                const table         = rightsArr[0];
+                const methode       = rightsArr[1];
 
-            if ( config.module.useRightSystem && !request.noCheck )
-                rights.check(request.user)
+                let tableStatus   = false;
+                let methodeStatus = false;
 
-            const db = await this.initDb();
+                // const record        = rightsArr[2];
+                // const field         = rightsArr[3];
 
-            if ( Object.keys(request.query).length === 0 )
-                throw('Query Empty')
+                if ( table ) {
+                    if ( checkAsterisk(table) )
+                        return true;
 
-            const res = await db.collection(request.table).deleteOne(
-                request.query
-            );
+                    if ( table.indexOf(bodyParse.table) > -1 )
+                        tableStatus = true;
+                }
 
-            if ( res.acknowledged )
-                return { data: res.deletedCount }
+                if ( methode && tableStatus ) {
+                    if ( checkAsterisk(methode) )
+                        return true;
+    
+                    if ( methode.indexOf(bodyMethode) > -1 ) {
+                        methodeStatus = true;
+                        return true;
+                    }
+                }
 
-            throw(res)
-        } 
-        catch (error) {
-            console.error(error);
-            return { error };
-        }
-    }
+                return false
+            } );
 
-    async findOne ( request ) {
-        try {
-            config.debug.extend && debug('findOne params: ', request );
-
-            findOne.parse(request)
-
-            if ( !request.auth )
-                throw('Not Authorized')
-
-            if ( config.module.useRightSystem && !request.noCheck )
-                rights.check(request.user)
-
-            const db = await this.initDb();
-
-            const result = await db.collection(request.table).findOne(
-                request.query
-            );
-
-            const count = await db.collection(request.table).count();
-
-            return { data: result, total: count }
-        } catch (error) {
-            console.error(error);
-            return { error };
-        }
-    }
-
-    async find ( request ) {
-        try {
-            config.debug.extend && debug('find params: ', request );
-
-            find.parse(request)
-
-            if ( !request.auth )
-                throw('Not Authorized')
-
-            if ( config.module.useRightSystem && !request.noCheck )
-                rights.check(request.user)
+            config.debug.extend && debug('check rights result: ', filterResult );
             
-            const db = await this.initDb();
-
-            const result = await db.collection(request.table).find(
-                request.query
-            )
-            .sort( request.sort || null )
-            .skip( request.skip || 0 )
-            .limit( request.limit || 0 )
-            .toArray();
-
-            const count = await db.collection(request.table).find(
-                request.query
-            ).count();
-
-            return { data: result, total: count }
-        } catch (error) {
-            console.error(error);
-            return { error };
-        }
-    }
-
-    async count ( request ) {
-        try {
-            config.debug.extend && debug('count params: ', request );
-
-            count.parse(request);
-
-            if ( !request.auth )
-                throw('Not Authorized')
-
-            if ( config.module.useRightSystem && !request.noCheck )
-                rights.check(request.user)
-
-            const db = await this.initDb();
-
-            const result = await db.collection(request.table).count(
-                request.query
-            );
-
-            return { data: result }
-        } catch (error) {
-            console.error(error);
+            if ( filterResult.length === 0 )
+                throw('not enough rights');
+            else
+                return true;
+        } 
+        catch (error) {
             return { error };
         }
     }

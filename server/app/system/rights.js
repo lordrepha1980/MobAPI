@@ -13,14 +13,14 @@ try{
 catch(error) {
     console.log('Please create databasetable "rights"');
 }
-module.exports = class Login {
+module.exports = class Rights {
     
     constructor(  ) {
 
     }
 
     async check ( bodyParse ) { 
-        console.log(bodyParse)
+
         config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: result } = await rights.findOne(
@@ -45,7 +45,6 @@ module.exports = class Login {
             return token;
         } 
         catch (error) {
-            console.error(error);
             return { error };
         }
     }

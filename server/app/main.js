@@ -30,6 +30,13 @@ const main = {
             require(_dirname + '/server/app/system/auth.js');
         }
 
+        //rights
+        try {
+            require(_dirname + '/server/custom/system/rights.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/rights.js');
+        }
+
         //logout
         try {
             require(_dirname + '/server/custom/system/logout.js');
