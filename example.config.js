@@ -29,8 +29,9 @@ const config = {
         "extend": false
     },
     "module": {
-        "useSignin":    true,
-        "useRegister":  true
+        "useSignin":        true,
+        "useRegister":      true,
+        "useRightSystem":   true
     }
 }
 

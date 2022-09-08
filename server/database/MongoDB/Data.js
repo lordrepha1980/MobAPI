@@ -6,6 +6,10 @@ const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
 const z             = require("zod");
 
+const main          = require(_dirname + '/server/app/main');
+const rights         = new (main.getModule('/system/checkRights.js'))();
+
+
 const update = z.object({
     auth:       z.boolean(),
     table:      z.string(),
@@ -15,18 +19,21 @@ const update = z.object({
     }).optional(),
     cmd:        z.object({}).optional(),
     options:    z.object({}).optional(),
+    user:       z.object({}).optional()
 });
 
 const _delete = z.object({ 
     auth:       z.boolean(),
     table:      z.string(),
-    query:      z.object({})
+    query:      z.object({}),
+    user:       z.object({}).optional()
 })
 
 const findOne = z.object({ 
     auth:       z.boolean(),
     table:      z.string(),
-    query:      z.object({})
+    query:      z.object({}),
+    user:       z.object({}).optional()
 })
 
 const find = z.object({
@@ -35,13 +42,15 @@ const find = z.object({
     table:      z.string(),
     sort:       z.object({}).optional(),
     skip:       z.number().optional(),
-    limit:      z.number().optional()
+    limit:      z.number().optional(),
+    user:       z.object({}).optional()
 })
 
 const count = z.object({ 
     auth:       z.boolean(),
     table:      z.string(),
-    query:      z.object({})
+    query:      z.object({}),
+    user:       z.object({}).optional()
 })
 
 module.exports = class Data {
@@ -66,6 +75,9 @@ module.exports = class Data {
 
             if ( !request.auth )
                 throw('Not Authorized')
+            
+            if ( config.module.useRightSystem && !request.noCheck )
+                rights.check(request.user)
 
             const db    = await this.initDb();
             
@@ -112,6 +124,9 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Not Authorized')
 
+            if ( config.module.useRightSystem && !request.noCheck )
+                rights.check(request.user)
+
             const db = await this.initDb();
 
             if ( Object.keys(request.query).length === 0 )
@@ -141,6 +156,9 @@ module.exports = class Data {
             if ( !request.auth )
                 throw('Not Authorized')
 
+            if ( config.module.useRightSystem && !request.noCheck )
+                rights.check(request.user)
+
             const db = await this.initDb();
 
             const result = await db.collection(request.table).findOne(
@@ -164,6 +182,9 @@ module.exports = class Data {
 
             if ( !request.auth )
                 throw('Not Authorized')
+
+            if ( config.module.useRightSystem && !request.noCheck )
+                rights.check(request.user)
             
             const db = await this.initDb();
 
@@ -194,6 +215,9 @@ module.exports = class Data {
 
             if ( !request.auth )
                 throw('Not Authorized')
+
+            if ( config.module.useRightSystem && !request.noCheck )
+                rights.check(request.user)
 
             const db = await this.initDb();
 
