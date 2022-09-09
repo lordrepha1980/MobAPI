@@ -178,8 +178,9 @@ this is the API for `https://url/data/` request.
         sort,
         skip,
         limit,
-        auth,
-        user
+        auth, //only server
+        noCheck, // only Server
+        user //only server
     }
     
 - table:                Required (String) Databasetable
@@ -190,6 +191,7 @@ this is the API for `https://url/data/` request.
 - skip:                 Skip lines from the database
 - limit:                Max lines from database 
 - auth:                 Required (boolean) true / false is user login ( only server parameter )
+- noCheck:              (boolean) check permission ( only server parameter )
 - user:                 (Object) the user ( only server parameter )
 - ctx:                  complete request from Koa
     
@@ -357,7 +359,57 @@ Generate a secret keys for a salt or whatever.
     /secret
 
 
+# Permission
+Activate the rights in config.js
 
+    "module": {
+        "useRights":    true
+    }
+
+create a database table 'rights'
+
+schema rights
+
+    table:methode
+
+    //example
+    //all permission granted
+    {
+        "_id" : "1",
+        "group" : "admin",
+        "permission" : [
+            "*"
+        ]
+    }
+
+    //ser methods allowed
+    {
+        "_id" : "1",
+        "group" : "user",
+        "permission" : [
+            "user:*"
+        ]
+    }
+
+    //user, order methods allowed
+    {
+        "_id" : "1",
+        "group" : "user",
+        "permission" : [
+            "user:*",
+            "order:*"
+        ]
+    }
+
+    //user methode find, all order methods allowed
+    {
+        "_id" : "1",
+        "group" : "user",
+        "permission" : [
+            "user:find",
+            "order:*"
+        ]
+    }
 
 
 

@@ -31,7 +31,7 @@ const config = {
     "module": {
         "useSignin":        true,
         "useRegister":      true,
-        "useRightSystem":   true
+        "useRights":   true
     }
 }
 

@@ -61,7 +61,7 @@ module.exports = class Rights {
             //check if table allowed    
             const filterResult = rights.filter( (right) => {
                 const rightsArr = right.split(':');
-
+                
                 const table         = rightsArr[0];
                 const methode       = rightsArr[1];
 
