@@ -25,7 +25,7 @@ module.exports = class Register {
 
         config.debug.extend && debug('register params: ', bodyParse );
         try {
-            const {data: userExists} = await user.findOne({ table: 'user', query: { username: bodyParse.body.username }, auth: true, actions: { register: true, auth: true } });
+            const {data: userExists} = await user.findOne({ table: 'user', noCheck: true, query: { username: bodyParse.body.username }, auth: true, actions: { register: true, auth: true } });
 
             if ( userExists )
                 throw ("User already exists");

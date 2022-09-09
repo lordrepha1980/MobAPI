@@ -23,7 +23,7 @@ module.exports = class Login {
         config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: result } = await user.findOne(
-                { table: 'user', auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
+                { table: 'user', noCheck: true, auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
             );
             
             if ( !result )
