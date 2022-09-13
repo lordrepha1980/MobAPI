@@ -27,7 +27,7 @@ app.use(passport.session());
 app.use(cors());
 
 const Router            = require('@koa/router');
-const koaBody           = require('koa-bodyparser');
+const koaBody           = require('koa-body');
 const session           = require('koa-session');
 
 const router            = new Router();

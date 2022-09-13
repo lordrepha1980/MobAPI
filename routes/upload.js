@@ -13,7 +13,7 @@ router.init  = function( socket ) {
 };
 
 router
-    .post("/:class/:action", upload.single(), async (ctx, next) => {
+    .post("/:class/:action", upload.single('upload'), async (ctx, next) => {
         
         const Custom        = require(`${_dirname}/server/database/customApi/${ctx.params.class}.js`);
         const custom        = new Custom();
