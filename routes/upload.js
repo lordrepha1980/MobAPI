@@ -1,5 +1,6 @@
 const _dirname  = process.cwd()
 const Router    = require('@koa/router');
+const multer    = require('@koa/multer');
 const upload    = multer()
 const router    = new Router({
     prefix: '/upload'
