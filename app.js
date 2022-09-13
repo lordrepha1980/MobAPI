@@ -36,7 +36,9 @@ const config            = require(_dirname + "/config");
 const port              = normalizePort(config.serverPort || "3000");
 
 app.use(serve(config.publicPath || './public'));
-app.use( koaBody() );
+app.use( koaBody({
+        multipart: true
+}) );
 
 router.use( '/', async ( ctx, next ) => { 
     const auth = function () {
