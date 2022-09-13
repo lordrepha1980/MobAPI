@@ -66,6 +66,7 @@ main.moduleLoader();
 const data              = require("./routes/data");
 const custom            = require("./routes/custom");
 const login             = require("./routes/login");
+const upload            = require("./routes/upload");
 
 if ( sock ) {
     console.log('socket init')
@@ -76,6 +77,7 @@ if ( sock ) {
 router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
+router.use( upload.routes() );
 app.use(session({}, app));
 
 app
