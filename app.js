@@ -29,6 +29,7 @@ app.use(cors());
 const Router            = require('@koa/router');
 const koaBody           = require('koa-bodyparser');
 const session           = require('koa-session');
+const multer            = require('@koa/multer');
 
 const router            = new Router();
 
@@ -37,6 +38,7 @@ const port              = normalizePort(config.serverPort || "3000");
 
 app.use(serve(config.publicPath || './public'));
 app.use( koaBody() );
+app.use( multer );
 
 router.use( '/', async ( ctx, next ) => { 
     const auth = function () {
