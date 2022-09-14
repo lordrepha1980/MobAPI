@@ -21,7 +21,7 @@ module.exports = class Secret {
                 path    = `${_dirname}/server/database/${config.database.type}/dataApi/${routes[1]}.js`;
 
             if ( routes[0] === 'custom' )
-                path    = `${_dirname}/server/database/customApi/${routes[1]}.js`;
+                path    = `${_dirname}/server/database/customApi/post/${routes[1]}.js`;
 
             let ClassRouter = null
             if ( path )
