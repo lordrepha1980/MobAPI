@@ -36,7 +36,7 @@ router
         let result          = {data: null};
 
         if ( custom[ctx.params.action] )
-            result.data = await custom[ctx.params.class][ctx.params.action]( { query: ctx.request.query, ctx, io } )
+            result.data = await custom[ctx.params.action]( { query: ctx.request.query, ctx, io } )
         else {
             console.error( 'No action found. Called action: ', ctx.params.action )
 
