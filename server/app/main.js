@@ -74,8 +74,12 @@ const main = {
         const checks = [
             './server/custom/data',
             './server/custom/custom',
+            './server/custom/custom/post',
+            './server/custom/custom/get',
             './server/custom/system',
             './server/database/customApi',
+            './server/database/customApi/get',
+            './server/database/customApi/post',
             './server/database/MongoDB/dataApi'
         ];
         for (let i = 0; i < checks.length; i++)
@@ -103,17 +107,36 @@ const main = {
           
         }
 
-        //generate tables für Custom
+        //generate tables für Custom GET
         if ( fs.existsSync(`./server/custom/custom`) ) {
-            fs.readdir(`./server/custom/custom`, (err, files) => {
+            fs.readdir(`./server/custom/custom/get`, (err, files) => {
                 files.forEach(file => {
 
-                    const Template                = `./server/custom/custom/${file}`;
-                    console.log('render Template (CUSTOM): ', file); 
+                    const Template                = `./server/custom/custom/get/${file}`;
+                    console.log('render Template (CUSTOM GET): ', file); 
 
                     const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
                     //write templates
-                    fs.writeFileSync(`./server/database/customApi/${file}`, template, err => {
+                    fs.writeFileSync(`./server/database/customApi/get/${file}`, template, err => {
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                });
+            });
+        }
+
+        //generate tables für Custom POST
+        if ( fs.existsSync(`./server/custom/custom`) ) {
+            fs.readdir(`./server/custom/custom/post`, (err, files) => {
+                files.forEach(file => {
+
+                    const Template                = `./server/custom/custom/post/${file}`;
+                    console.log('render Template (CUSTOM POST): ', file); 
+
+                    const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    //write templates
+                    fs.writeFileSync(`./server/database/customApi/post/${file}`, template, err => {
                         if (err) {
                             console.error(err);
                         }
