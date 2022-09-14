@@ -14,7 +14,7 @@ const config            = require(_dirname + '/config');
 
 {% block main %}{% endblock %}
 
-class {{ function }} extends Custom { 
+class {{ function.split(.)[0] }} extends Custom { 
 
     {% block methodConstructor %}
         constructor() {

@@ -9,7 +9,7 @@ const mob           = new ClassRouter();
 
 {% block main %}{% endblock %}
 
-class {{ table }} extends Data { 
+class {{ table.split(.)[0] }} extends Data { 
 
     {% block methodConstructor %}
         constructor() {
