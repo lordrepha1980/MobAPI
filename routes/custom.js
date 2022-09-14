@@ -14,7 +14,7 @@ router.init  = function( socket ) {
 router
     .post("/:class/:action", async (ctx, next) => {
         
-        const Custom        = require(`${_dirname}/server/database/customApi/${ctx.params.class}.js`);
+        const Custom        = require(`${_dirname}/server/database/customApi/post/${ctx.params.class}.js`);
         const custom        = new Custom();
         let result          = {data: null};
 
@@ -31,7 +31,7 @@ router
 router
     .get("/:class/:action", async (ctx, next) => {
         
-        const Custom        = require(`${_dirname}/server/database/customApi/get${ctx.params.class}.js`);
+        const Custom        = require(`${_dirname}/server/database/customApi/get/${ctx.params.class}.js`);
         const custom        = new Custom();
         let result          = {data: null};
 
