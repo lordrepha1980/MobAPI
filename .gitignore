@@ -3,7 +3,8 @@ node_modules
 .DS_Store
 config.js
 server/custom/socket.js
-server/custom/custom/*
+server/custom/custom/get/*
+server/custom/custom/post/*
 server/custom/data/*
 server/database/customApi/*
 server/database/MongoDB/dataApi/*
