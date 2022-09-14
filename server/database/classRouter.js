@@ -33,7 +33,7 @@ module.exports = class Secret {
                 return null;
         } 
         catch (error) {
-            console.error('classRouter': error);
+            console.error('classRouter:', error);
             return 'classRouter error: ' + error
         }
     }
