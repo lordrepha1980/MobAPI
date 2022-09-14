@@ -9,6 +9,9 @@ const auth          = new Auth();
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
 const mob           = new ClassRouter();
 
+const uuid              = require('uuid');
+const config            = require(_dirname + '/config');
+
 {% block main %}{% endblock %}
 
 class {{ function }} extends Custom { 
