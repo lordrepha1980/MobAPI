@@ -45,7 +45,7 @@ router
 
         if (table[ctx.params.action]) {
             result = await table[ctx.params.action]( { 
-                table:      ctx.params.table, 
+                table:      ctx.params.table || ctx.request.body.table, 
                 query:      ctx.request.body.query, 
                 body:       ctx.request.body.body, 
                 actions:    ctx.request.body.actions,
