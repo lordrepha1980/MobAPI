@@ -33,8 +33,8 @@ module.exports = class Secret {
                 return null;
         } 
         catch (error) {
-            console.error(error);
-            return 'Database error: ' + error
+            console.error('classRouter': error);
+            return 'classRouter error: ' + error
         }
     }
 
