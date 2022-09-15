@@ -91,7 +91,8 @@ the main directory for developer.
 
     `/data`: In this directory you can set hooks or methods for 'data' endpoint like `yourdomain/data/:table/:action`
 
-    `/custom` In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
+    `/custom/get` GET: In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
+    `/custom/post` GET: In the  directory you can methods for 'custom' endpoint like `yourdomain/custom/:action/` 
 
     `system` In the  directory you can overwrite system endpoints
     possible endpoints are:
