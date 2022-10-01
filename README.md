@@ -3,7 +3,7 @@ A node.js API
 
 ## Installation
 
-1. `git clone git@github.com:CodingRuo/MobAPI.git`
+1. `git clone https://github.com/CodingRuo/MobAPI.git`
 2. npm i
 3. npm i pm2 -g
 4. Configuration
