@@ -7,7 +7,8 @@ A node.js API
 2. npm i
 3. npm i pm2 -g
 4. Configuration
-4. Start server `pm2 start mobapi.config.js`
+5. create a `server/database/tables.json`
+6. Start server `pm2 start mobapi.config.js`
 
 ## Configuration
 Create a file in root with name config.js. Feel free to extend the structure for your own project
