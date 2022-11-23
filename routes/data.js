@@ -15,7 +15,7 @@ router.init  = function( socket ) {
 
 router
     .get("/:table/:action", async (ctx, next) => {
-   
+
         const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
         let result      = null;

@@ -41,6 +41,17 @@ app.use( koaBody({
 }) );
 
 router.use( '/', async ( ctx, next ) => { 
+    // check Injections
+    let injectionCheck = null
+    if ( ctx.params.class )
+        injectionCheck = ctx.params.class.match("(\.\/)")
+
+    if ( ctx.params.table )
+        injectionCheck = ctx.params.table.match("(\.\/)")
+    
+    if ( injectionCheck )
+        return ctx.throw(400, 'Injection detected');
+
     const auth = function () {
         return new Promise((resolve, reject) => {
             passport.authenticate('jwt', { session: false }, function (err, user, info, status) {
