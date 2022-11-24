@@ -253,7 +253,7 @@ this template is for custom/custom/:class request
 
     {% block main %}{% endblock %}
 
-    {% block methodeFunction %}
+    {% block methodFunction %}
         //write methods here
     {% endblock %} 
 
