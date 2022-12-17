@@ -1,24 +1,30 @@
 const { nextTick } = require( 'process' );
+const { init } = require( './routes/custom' );
 
 ( async () => {
 console.log(    'init App: start');
 
+const http              = require('http')
 const serve             = require('koa-static');
 const Koa               = require("koa");
 const cors              = require('@koa/cors');
 const app               = new Koa();
+const server            = http.createServer(app.callback());
 const fs                = require('fs');
-
-sock                    = null
+let sock                = null;
+let init                = null;
 
 if (fs.existsSync(`./server/custom/system/passportStrategy.js`))
     require('./server/custom/system/passportStrategy.js');
 else
     require('./server/app/system/passportStrategy');
 
-//check if socket file exist
-if (fs.existsSync(`./server/custom/socket.js`))
-    sock                = require(`./server/custom/socket.js`)( app );
+//check if socket file exist lordrepha
+if (fs.existsSync(`./server/custom/system/socket.js`))
+    sock                = require(`./server/custom/system/socket.js`)( server );
+
+if (fs.existsSync(`./server/custom/system/init.js`))
+    init                = require(`./server/custom/system/init.js`);
     
 const passport          = require('koa-passport')
 
@@ -84,6 +90,11 @@ if ( sock ) {
     custom.init( sock );
 }
 
+if ( init ) {
+    console.log('init init')
+    init.init();
+}
+
 router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
@@ -93,11 +104,9 @@ app
     .use(router.routes())
     .use(router.allowedMethods());
 
-app.listen(port, async () => {
+server.listen(port, async () => {
     console.log( "Server starts on port:" + port );
 });
-
-
 
 function normalizePort(val) {
     const port = parseInt(val, 10);
