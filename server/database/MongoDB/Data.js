@@ -104,7 +104,7 @@ module.exports = class Data {
 
             if ( res.acknowledged ) {
                 const result = await db.collection(request.table).findOne(
-                    { _id: request.body._id }
+                    { _id: query._id }
                 );
 
                 return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
