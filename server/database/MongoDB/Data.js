@@ -62,10 +62,13 @@ module.exports = class Data {
     async initDb ( ) {
         const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
         let connection          = new Connection();
-        const db                = await connection.init();     
-        return db;
+        const { db, client }    = await connection.init();     
+        return { db, client };
     }
 
+    async closeDb ( client ) {
+        client.close()
+    }
 
     async update ( request ) {
         try{
@@ -82,7 +85,7 @@ module.exports = class Data {
                     throw(error)
             }
 
-            const db    = await this.initDb();
+            const { db, client }    = await this.initDb();
             
             if ( request.body && !request.body._id ) {
                 const id = uuid.v4();
@@ -105,7 +108,7 @@ module.exports = class Data {
             if ( res.acknowledged ) {
                 const result = await db.collection(request.table).findOne(
                     { _id: query._id }
-                );
+                )
 
                 return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
             }
@@ -132,7 +135,7 @@ module.exports = class Data {
                     throw(error)
             }
 
-            const db = await this.initDb();
+            const { db, client }     = await this.initDb();
 
             if ( Object.keys(request.query).length === 0 )
                 throw('Query Empty')
@@ -140,6 +143,8 @@ module.exports = class Data {
             const res = await db.collection(request.table).deleteOne(
                 request.query
             );
+
+            this.closeDb( client );
 
             if ( res.acknowledged )
                 return { data: res.deletedCount }
@@ -162,22 +167,23 @@ module.exports = class Data {
                 throw('Not Authorized')
 
             if ( config.module.useRights && !request.noCheck ) {
-                console.log(request.table, 'nicht drin')
                 const { error } = await rights.check(request, 'find')
                 if ( error )
                     throw(error)
             }
 
-            const db = await this.initDb();
+            const { db, client }     = await this.initDb();
 
             const result = await db.collection(request.table).findOne(
                 request.query
             );
-
+            
             const count = await db.collection(request.table).count();
+            this.closeDb(client);
 
             return { data: result, total: count }
-        } catch (error) {
+        } 
+        catch (error) {
             return { error };
         }
     }
@@ -198,7 +204,7 @@ module.exports = class Data {
                     throw(error)
             }
             
-            const db = await this.initDb();
+            const { db, client }     = await this.initDb();
 
             const result = await db.collection(request.table).find(
                 request.query
@@ -212,8 +218,11 @@ module.exports = class Data {
                 request.query
             ).count();
 
+            this.closeDb(client);
+
             return { data: result, total: count }
-        } catch (error) {
+        } 
+        catch (error) {
             return { error };
         }
     }
@@ -233,11 +242,13 @@ module.exports = class Data {
                     throw(error)
             }
 
-            const db = await this.initDb();
+            const { db, client }     = await this.initDb();
 
             const result = await db.collection(request.table).count(
                 request.query
             );
+            
+            this.closeDb(client);
 
             return { data: result }
         } catch (error) {
