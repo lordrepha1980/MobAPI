@@ -3,6 +3,7 @@
 const _dirname      = process.cwd();
 const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 const DataClass     = new Data();
+const debug         = require('debug')('app:server:database:MongoDB:mainTemplate');
 
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
 const mob           = new ClassRouter();
@@ -28,7 +29,7 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.log(error)
+                debug(error)
                 throw ( error )
             }
             
@@ -46,7 +47,7 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.log(error)
+                console.debug(error)
                 throw ( error )
             }
         }
@@ -63,7 +64,7 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.log(error)
+                debug(error)
                 throw ( error )
             }
         }
@@ -80,7 +81,7 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.log(error)
+                debug(error)
                 throw ( error )
             }
         }
@@ -97,7 +98,7 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.log(error)
+                debug(error)
                 throw ( error )
             }
         }

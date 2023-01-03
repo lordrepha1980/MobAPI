@@ -4,6 +4,7 @@ const config                = require(_dirname + "/config");
 const dbType                = config.database.type;
 const fs                    = require('fs');  
 const fsPromise             = require('fs/promises');    
+const debug                 = require('debug')('app:server:app:main');
 
 const Nunjucks              = require("nunjucks");   
 
@@ -61,7 +62,7 @@ const main = {
           }, undefined);
     },
     checkStructure: async () =>{ 
-        console.log('check Structure: ');
+        debug('check Structure: ');
 
         const checks = [
             './server/custom/data',
@@ -87,7 +88,7 @@ const main = {
             if ( fs.existsSync(`./server/custom/data/${key}.js`) )
                 Template                = `./server/custom/data/${key}.js`;
 
-            console.log('render Template (DATA): ', key); 
+            debug('render Template (DATA): ', key); 
             const template              = Nunjucks.render(Template, { table: key, database: dbType, _dirname });
             //write templates
 
@@ -105,7 +106,7 @@ const main = {
                 files.forEach(file => {
 
                     const Template                = `./server/custom/custom/get/${file}`;
-                    console.log('render Template (CUSTOM GET): ', file); 
+                    debug('render Template (CUSTOM GET): ', file); 
 
                     const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
                     //write templates
@@ -124,7 +125,7 @@ const main = {
                 files.forEach(file => {
 
                     const Template                = `./server/custom/custom/post/${file}`;
-                    console.log('render Template (CUSTOM POST): ', file); 
+                    debug('render Template (CUSTOM POST): ', file); 
 
                     const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
                     //write templates

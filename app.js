@@ -1,8 +1,9 @@
-const { nextTick } = require( 'process' );
-const { init } = require( './routes/custom' );
+const { nextTick }      = require( 'process' );
+const { init }          = require( './routes/custom' );
+const debug             = require( 'debug' )( 'app:server:app' );
 
 ( async () => {
-console.log(    'init App: start');
+debug(    'init App: start');
 
 const http              = require('http')
 const serve             = require('koa-static');
@@ -85,13 +86,13 @@ const custom            = require("./routes/custom");
 const login             = require("./routes/login");
 
 if ( sock ) {
-    console.log('socket init')
+    debug('socket init')
     data.init( sock );
     custom.init( sock );
 }
 
 if ( init ) {
-    console.log('init init')
+    debug('init')
     init.init();
 }
 
@@ -105,7 +106,7 @@ app
     .use(router.allowedMethods());
 
 server.listen(port, async () => {
-    console.log( "Server starts on port:" + port );
+    debug( "Server starts on port:" + port );
 });
 
 function normalizePort(val) {

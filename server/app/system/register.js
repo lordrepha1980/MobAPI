@@ -4,15 +4,15 @@ const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const config        = require(_dirname + '/config');
-
-const bcryptSalt   = config.bcrypt.saltRounds;
+const bcryptSalt    = config.bcrypt.saltRounds;
+let user            = null
 
 try{
     const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
-    const user = new User()
+    user = new User()
 }
 catch(error) {
-
+    debug('register error:', error)
 }
 
 module.exports = class Register {
@@ -35,7 +35,7 @@ module.exports = class Register {
             if ( hash )
                 bodyParse.body.password = hash
 
-            const { data: createdUser } = await user.update({ table: 'user', body: bodyParse.body, auth: true, actions: { register: true, auth: true } });
+            const { data: createdUser } = await user.update({ table: 'user', body: bodyParse.body, noCheck: true, auth: true, actions: { register: true, auth: true } });
 
             if ( createdUser )
                 delete createdUser.password;

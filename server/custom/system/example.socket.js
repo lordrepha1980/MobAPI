@@ -1,24 +1,27 @@
-const { Server }            = require('socket.io');
-const io                    = new Server({
-    cors: {
-        origin: "http://localhost:9000",
-        credentials: true
-    }
+const debug             = require('debug')('app:server:custom/system:socket');
+const IO                = require('koa-socket-2');
+const io                = new IO({
+    ioOptions: {
+      cors: {},
+    },
 });
+
 
 module.exports  = ( app ) => {
     io.attach(app);
-    console.log('socket io attached');
+    debug('socket io attached');
    
     io.on("connection", (socket) => {
         sock = socket;
-        io.socket = socket;
-        console.log('socket connected');
-    
+        debug('socket connected');
     });
 
     io.on("disconnect", (socket) => {
-        console.log('socket disconnected');
+        debug('socket disconnected');
+    });
+
+    io.on("message", (ctx, data) => {
+        debug(data);
     });
 
     return io

@@ -5,13 +5,13 @@ const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const config        = require(_dirname + '/config');
 const jwt           = require('jsonwebtoken');
-let user          = null;
+let user            = null;
 try{
     const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
     user = new User()
 }
 catch(error) {
-    console.log('Please create databasetable "user"');
+    debug('Please create databasetable "user"');
 }
 module.exports = class Login {
     
@@ -23,7 +23,7 @@ module.exports = class Login {
         config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: result } = await user.findOne(
-                { table: 'user', noCheck: true, auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
+                { table: 'user', noCheck: true, auth: true, query: { username: bodyParse.body.username }, actions: { login: true } }
             );
             
             if ( !result )

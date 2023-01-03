@@ -157,7 +157,6 @@ module.exports = class Data {
     }
 
     async findOne ( request ) {
-        console.log('findOne', request.table, request.noCheck)
         try {
             config.debug.extend && debug('findOne params: ', request );
 
@@ -175,8 +174,11 @@ module.exports = class Data {
             const { db, client }     = await this.initDb();
 
             const result = await db.collection(request.table).findOne(
-                request.query
-            );
+                request.query,
+                {
+                    projection: request.project || {}
+                }
+            )
             
             const count = await db.collection(request.table).count();
             this.closeDb(client);
@@ -189,7 +191,6 @@ module.exports = class Data {
     }
 
     async find ( request ) {
-        console.log('find', request.table, request.noCheck)
         try {
             config.debug.extend && debug('find params: ', request );
 
@@ -209,6 +210,7 @@ module.exports = class Data {
             const result = await db.collection(request.table).find(
                 request.query
             )
+            .project( request.project || {} )
             .sort( request.sort || null )
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
@@ -216,7 +218,7 @@ module.exports = class Data {
 
             const count = await db.collection(request.table).find(
                 request.query
-            ).count();
+            ).countDocuments();
 
             this.closeDb(client);
 
@@ -244,7 +246,7 @@ module.exports = class Data {
 
             const { db, client }     = await this.initDb();
 
-            const result = await db.collection(request.table).count(
+            const result = await db.collection(request.table).countDocuments(
                 request.query
             );
             
