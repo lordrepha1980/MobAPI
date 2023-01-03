@@ -25,7 +25,7 @@ module.exports = class Connection {
             await client.connect();
             const db                = client.db(dbName);
             
-            return db
+            return { db, client }
         }
         
 }

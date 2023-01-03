@@ -60,14 +60,6 @@ const main = {
             return loaded_module.exports;
           }, undefined);
     },
-    // initDatabase: async () =>{ 
-    //     console.log('init Database: ', dbType);
-
-    //     if ( dbType === 'MongoDB' ) {
-    //         const Connection        = require('../database/MongoDB/Connection.js');
-    //         let connection          = new Connection();
-    //         const db                = await connection.init();        }
-    // },
     checkStructure: async () =>{ 
         console.log('check Structure: ');
 

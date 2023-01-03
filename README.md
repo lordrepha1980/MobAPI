@@ -6,8 +6,8 @@ A node.js API
 1. git clone `https://github.com/CodingRuo/MobAPI.git`
 2. npm i
 3. npm i pm2 -g
-4. Configuration
-5. create a `server/database/tables.json`
+4. [Configuration](https://github.com/CodingRuo/MobAPI/blob/master/README.md#configuration)
+5. create a [server/database/tables.json](https://github.com/CodingRuo/MobAPI/blob/master/README.md#tables)
 6. Start server `pm2 start mobapi.config.js`
 
 ## Configuration

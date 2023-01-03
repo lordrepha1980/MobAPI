@@ -147,7 +147,7 @@ module.exports = class Data {
             this.closeDb( client );
 
             if ( res.acknowledged )
-                return { data: res.deletedCount }
+                return { data: { deletedCount: res.deletedCount, query: request.query } }
 
             throw(res)
         } 
