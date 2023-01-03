@@ -66,6 +66,7 @@ With this file you can create data endpoints
     }
     
 after save from the tables.json MobAPI generate automatically a class with methodes (find, findOne, update, delete...).
+[See data api calls](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#data-api-calls)
 
 
 ### database init:
@@ -159,6 +160,7 @@ available item in Hook are:
     - _dirname: root directory
 
 ## DATA API Calls
+IMPORTANT: ALL  REQUEST TO THE ROUTE /DATA NEED A VALIDE AUTHTENTICATE FOR OPEN ROUTE PLEASE USE /CUSTOM
 this is the API for `https://url/data/` request.
 
 ## get
