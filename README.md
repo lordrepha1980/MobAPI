@@ -3,11 +3,11 @@ A node.js API
 
 ## Installation
 
-1. git clone `https://github.com/CodingRuo/MobAPI.git`
+1. git clone `https://github.com/lordrepha1980/MobAPI.git`
 2. npm i
 3. npm i pm2 -g
-4. [Configuration](https://github.com/CodingRuo/MobAPI/blob/master/README.md#configuration)
-5. create a [server/database/tables.json](https://github.com/CodingRuo/MobAPI/blob/master/README.md#tables)
+4. [Configuration](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#configuration)
+5. create a [server/database/tables.json](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#configuration)
 6. Start server `pm2 start mobapi.config.js`
 
 ## Configuration
@@ -56,6 +56,17 @@ Example
 - module - enable standard modules
 
 MongoDB: connect to database without credentials remove key 'database.credentials'
+
+## tables.json:
+With this file you can create data endpoints
+
+    {
+        "posts": 'User Posts Collection',
+        "votings": "votings Collection"
+    }
+    
+after save from the tables.json MobAPI generate automatically a class with methodes (find, findOne, update, delete...).
+
 
 ### database init:
 
@@ -144,7 +155,7 @@ Possible methodes in CUSTOMTEMPLATE
 ### items in Hook
 available item in Hook are:
     - result:   result from the database
-    - request:  request from the client see [params](https://github.com/CodingRuo/MobAPI/blob/master/README.md#parameter)
+    - request:  request from the client see [params](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#parameter)
     - _dirname: root directory
 
 ## DATA API Calls
