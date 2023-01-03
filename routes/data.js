@@ -15,7 +15,7 @@ router.init  = function( socket ) {
 
 router
     .get("/:table/:action", async (ctx, next) => {
-
+   
         const Data      = require(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`);
         const table     = new Data();
         let result      = null;
@@ -24,6 +24,7 @@ router
             result = await table[ctx.params.action]( { 
                 table:      ctx.params.table, 
                 query:      ctx.params.query,
+                project:    ctx.params.project,
                 sort:       ctx.params.sort,
                 skip:       ctx.params.skip,
                 limit:      ctx.params.limit,
@@ -49,6 +50,7 @@ router
                 query:      ctx.request.body.query, 
                 body:       ctx.request.body.body, 
                 actions:    ctx.request.body.actions,
+                project:    ctx.request.body.project,
                 sort:       ctx.request.body.sort,
                 skip:       ctx.request.body.skip,
                 limit:      ctx.request.body.limit,
