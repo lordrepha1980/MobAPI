@@ -160,7 +160,8 @@ available item in Hook are:
     - _dirname: root directory
 
 ## DATA API Calls
-IMPORTANT: ALL  REQUEST TO THE ROUTE /DATA NEED A VALIDE AUTHTENTICATE FOR OPEN ROUTE PLEASE USE /CUSTOM
+IMPORTANT: ALL  REQUEST TO THE ROUTE /DATA NEED A VALIDE AUTHTENTICATE FOR OPEN ROUTE PLEASE USE /CUSTOM [MORE DETAILS](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#custom-api-calls).
+
 this is the API for `https://url/data/` request.
 
 ## get
