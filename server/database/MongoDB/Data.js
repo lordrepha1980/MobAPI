@@ -194,8 +194,6 @@ module.exports = class Data {
         try {
             config.debug.extend && debug('find params: ', request );
 
-            find.parse(request)
-
             if ( !request.auth )
                 throw('Not Authorized')
 
@@ -215,10 +213,10 @@ module.exports = class Data {
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
             .toArray();
-
-            const count = await db.collection(request.table).find(
+            
+            const count = await db.collection(request.table).countDocuments(
                 request.query
-            ).countDocuments();
+            );
 
             this.closeDb(client);
 
@@ -246,7 +244,7 @@ module.exports = class Data {
 
             const { db, client }     = await this.initDb();
 
-            const result = await db.collection(request.table).countDocuments(
+            const count = await db.collection(request.table).countDocuments(
                 request.query
             );
             
