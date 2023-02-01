@@ -14,6 +14,13 @@ const server            = http.createServer(app.callback());
 const fs                = require('fs');
 let sock                = null;
 let init                = null;
+const Sentry            = require("@sentry/node");
+
+if ( config.sentryDSN )
+    Sentry.init({
+        dsn: config.sentryDSN,
+        tracesSampleRate: 1.0,
+    });
 
 if (fs.existsSync(`./server/custom/system/passportStrategy.js`))
     require('./server/custom/system/passportStrategy.js');
@@ -100,6 +107,14 @@ router.use( data.routes() );
 router.use( custom.routes() );
 router.use( login.routes() );
 app.use(session({}, app));
+
+app.on("error", (err, ctx) => {
+    if ( config.sentryDSN )
+        Sentry.withScope(scope => {
+        scope.setSDKProcessingMetadata({ request: ctx.request });
+        Sentry.captureException(err);
+        });
+  });
 
 app
     .use(router.routes())

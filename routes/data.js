@@ -10,7 +10,7 @@ const router    = new Router({
 let io;
 
 router.init  = function( socket ) {
-    io    = socket;
+    io      = socket;
 };
 
 router

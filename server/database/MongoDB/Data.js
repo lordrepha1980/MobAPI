@@ -84,8 +84,6 @@ module.exports = class Data {
                 if ( error )
                     throw(error)
             }
-
-            const { db, client }    = await this.initDb();
             
             if ( request.body && !request.body._id ) {
                 const id = uuid.v4();
@@ -97,6 +95,7 @@ module.exports = class Data {
 
             let query   = request.query || { _id: request.body._id }
 
+            const { db, client }    = await this.initDb();
             const res = await db.collection(request.table).updateOne(
                 query, 
                 request.cmd ? request.cmd : { $set: 
@@ -109,9 +108,11 @@ module.exports = class Data {
                 const result = await db.collection(request.table).findOne(
                     { _id: query._id }
                 )
-
+                this.closeDb( client );
                 return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
             }
+
+            this.closeDb( client );
 
             throw({ error: 'Save abort' })
         } 
@@ -135,15 +136,13 @@ module.exports = class Data {
                     throw(error)
             }
 
-            const { db, client }     = await this.initDb();
-
             if ( Object.keys(request.query).length === 0 )
                 throw('Query Empty')
 
+            const { db, client }     = await this.initDb();
             const res = await db.collection(request.table).deleteOne(
                 request.query
             );
-
             this.closeDb( client );
 
             if ( res.acknowledged )
@@ -172,7 +171,6 @@ module.exports = class Data {
             }
 
             const { db, client }     = await this.initDb();
-
             const result = await db.collection(request.table).findOne(
                 request.query,
                 {
@@ -243,11 +241,9 @@ module.exports = class Data {
             }
 
             const { db, client }     = await this.initDb();
-
             const count = await db.collection(request.table).countDocuments(
                 request.query
-            );
-            
+            );   
             this.closeDb(client);
 
             return { data: result }
