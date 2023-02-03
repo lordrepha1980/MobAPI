@@ -16,12 +16,6 @@ let sock                = null;
 let init                = null;
 const Sentry            = require("@sentry/node");
 
-if ( config.sentryDSN )
-    Sentry.init({
-        dsn: config.sentryDSN,
-        tracesSampleRate: 1.0,
-    });
-
 if (fs.existsSync(`./server/custom/system/passportStrategy.js`))
     require('./server/custom/system/passportStrategy.js');
 else
@@ -48,6 +42,12 @@ const router            = new Router();
 
 const config            = require(_dirname + "/config");
 const port              = normalizePort(config.serverPort || "3000");
+
+if ( config.sentryDSN )
+    Sentry.init({
+        dsn: config.sentryDSN,
+        tracesSampleRate: 1.0,
+    });
 
 app.use(serve(config.publicPath || './public'));
 app.use( koaBody({
