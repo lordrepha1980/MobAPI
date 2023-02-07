@@ -29,6 +29,7 @@ router
                 skip:       ctx.params.skip,
                 limit:      ctx.params.limit,
                 auth:       ctx.auth,
+                noCheck:    false,
                 user:       ctx.user ? ctx.user : null,
                 ctx,
                 io
@@ -55,6 +56,7 @@ router
                 skip:       ctx.request.body.skip,
                 limit:      ctx.request.body.limit,
                 auth:       ctx.auth,
+                noCheck:    false,
                 user:       ctx.user ? ctx.user : null,
                 ctx, 
                 io

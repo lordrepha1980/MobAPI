@@ -323,6 +323,9 @@ Update user with google direction;
         //Now you can call url/data/user/update
     {% endblock %}
 
+# Global-Hooks
+Do you want insert hooks in every api endpoint use the custom/system/globalHooks.js file.
+
 # Default-Authentication (JWT)
 Activate the Authentication in config.js
 
