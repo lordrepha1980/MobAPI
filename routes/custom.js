@@ -1,6 +1,7 @@
 const _dirname  = process.cwd()
 const Router    = require('@koa/router');
 const fs        = require('fs');
+const debug     = require('debug')('app:routes:custom');
 
 const router    = new Router({
     prefix: '/custom'
@@ -18,7 +19,7 @@ router
 
         if(!fs.existsSync(`${_dirname}/server/database/customApi/post/${ctx.params.class}.js`)) {
             const error = `Missing endpoint!. Called endpoint: ${ctx.params.class}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;
@@ -30,7 +31,7 @@ router
 
         if ( !custom[ctx.params.action] ) {
             const error = `Missing action!. Called action: ${ctx.params.action}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;
@@ -47,7 +48,7 @@ router
 
         if(!fs.existsSync(`${_dirname}/server/database/customApi/get/${ctx.params.class}.js`)) {
             const error = `Missing endpoint!. Called endpoint: ${ctx.params.class}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;
@@ -59,7 +60,7 @@ router
 
         if ( !custom[ctx.params.action] ) {
             const error = `Missing action!. Called action: ${ctx.params.action}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;

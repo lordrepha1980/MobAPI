@@ -1,6 +1,6 @@
 const _dirname  = process.cwd()
 const Router    = require('@koa/router');
-
+const debug     = require('debug')('app:routes:data');
 const config    = require("../config");
 const fs        = require("fs")
 
@@ -20,7 +20,7 @@ router
 
         if(!fs.existsSync(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`)) {
             error = `Missing endpoint!. Called endpoint: ${ctx.params.table}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;
@@ -44,7 +44,7 @@ router
             } )
         else {
             error = `Missing action!. Called action: ${ctx.params.action}`
-            console.error( error )
+            debug( error )
             result = { error }
         }
 
@@ -56,7 +56,7 @@ router
 
         if(!fs.existsSync(`${_dirname}/server/database/${config.database.type}/dataApi/${ctx.params.table}.js`)) {
             const error = `Missing endpoint!. Called endpoint: ${ctx.params.table}`
-            console.error( error )
+            debug( error )
             result = { error }
             ctx.status  = 400;
             ctx.body    = result;
@@ -83,7 +83,7 @@ router
             } )
         } else {
             const error = `Missing action!. Called action: ${ctx.params.action}`
-            console.error( error )
+            debug( error )
             result = { error }
         }
 

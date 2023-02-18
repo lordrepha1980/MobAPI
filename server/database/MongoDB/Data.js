@@ -1,5 +1,5 @@
 "use strict";
-const debug         = require('debug')('app:server:database:MongoDB:Data');
+const debug         = require('debug')('app:server:database:MongoDB:data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
@@ -57,8 +57,11 @@ const count = z.object({
 
 if ( config.sentryDSN ) {
     Sentry.init({
-        dsn: config.dsn,
-        tracesSampleRate: 1.0,
+        ...{
+            dsn: config.sentryDSN,
+            tracesSampleRate: 1.0,
+        },
+        ...config.sentryOptions
     });
 }
 

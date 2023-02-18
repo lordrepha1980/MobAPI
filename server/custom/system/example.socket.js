@@ -1,5 +1,6 @@
 const { Server }            = require('socket.io');
 const dotenv                = require('dotenv')
+const debug                 = require('debug')('app:server:custom:system:socket');
 dotenv.config({ path: './.env' })
 
 let options = null
@@ -15,17 +16,17 @@ const io                    = new Server(options);
 
 module.exports  = ( app ) => {
     io.attach(app);
-    console.log('socket io attached');
+    debug('io attached');
    
     io.on("connection", (socket) => {
         sock = socket;
         io.socket = socket;
-        console.log('socket connected');
+        debug('connected');
     
     });
 
     io.on("disconnect", (socket) => {
-        console.log('socket disconnected');
+        debug('disconnected');
     });
 
     return io

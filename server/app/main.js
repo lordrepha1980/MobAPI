@@ -112,7 +112,7 @@ const main = {
                     //write templates
                     fs.writeFileSync(`./server/database/customApi/get/${file}`, template, err => {
                         if (err) {
-                            console.error(err);
+                            debug(err);
                         }
                     });
                 });
@@ -131,7 +131,7 @@ const main = {
                     //write templates
                     fs.writeFileSync(`./server/database/customApi/post/${file}`, template, err => {
                         if (err) {
-                            console.error(err);
+                            debug(err);
                         }
                     });
                 });

@@ -1,7 +1,7 @@
 "use strict";
 const _dirname  = process.cwd()
 const config    = require( _dirname + "/config");
-const debug     = require('debug')('app:server:database:MongoDB:Connection');
+const debug     = require('debug')('app:server:database:MongoDB:connection');
 
 module.exports = class Connection { 
         

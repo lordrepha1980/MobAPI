@@ -45,8 +45,11 @@ const port              = normalizePort(config.serverPort || "3000");
 
 if ( config.sentryDSN )
     Sentry.init({
-        dsn: config.sentryDSN,
-        tracesSampleRate: 1.0,
+        ...{
+            dsn: config.sentryDSN,
+            tracesSampleRate: 1.0,
+        },
+        ...config.sentryOptions
     });
 
 app.use(serve(config.publicPath || './public'));

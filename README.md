@@ -54,6 +54,8 @@ Example
 - bcrypt - definition for standart methode encrypt a password
 - debug - enable extend log output
 - module - enable standard modules
+- sentryDSN - sentry.io dsn
+- sentryOptions: Object for sentry.io options,
 
 MongoDB: connect to database without credentials remove key 'database.credentials'
 

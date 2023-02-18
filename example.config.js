@@ -4,6 +4,8 @@ dotenv.config({ path: './.env' })
 
 const config = {
     "publicPath": "./public",
+    "sentryDSN": null,
+    "sentryOptions": null,
     "database": {
         "type": "MongoDB",
         "host": process.env.DB_HOST,
