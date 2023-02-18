@@ -111,8 +111,8 @@ app.use(session({}, app));
 app.on("error", (err, ctx) => {
     if ( config.sentryDSN )
         Sentry.withScope(scope => {
-        scope.setSDKProcessingMetadata({ request: ctx.request });
-        Sentry.captureException(err);
+            scope.setSDKProcessingMetadata({ request: ctx.request });
+            Sentry.captureException(err);
         });
   });
 

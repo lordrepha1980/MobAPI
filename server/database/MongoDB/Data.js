@@ -10,6 +10,8 @@ const main          = require(_dirname + '/server/app/main');
 const Rights        = require(_dirname + '/server/app/system/rights.js');
 const rights        = new Rights();
 
+const Sentry        = require("@sentry/node");
+
 const update = z.object({
     auth:       z.boolean(),
     table:      z.string(),
@@ -52,6 +54,13 @@ const count = z.object({
     query:      z.object({}),
     user:       z.object({}).optional()
 })
+
+if ( config.sentryDSN ) {
+    Sentry.init({
+        dsn: config.dsn,
+        tracesSampleRate: 1.0,
+    });
+}
 
 module.exports = class Data {
     
@@ -117,6 +126,8 @@ module.exports = class Data {
             throw({ error: 'Save abort' })
         } 
         catch (error) {
+            if (config.sentryDSN)
+                Sentry.captureException(error);
             return { error };
         }
     }
@@ -151,6 +162,8 @@ module.exports = class Data {
             throw(res)
         } 
         catch (error) {
+            if (config.sentryDSN)
+                Sentry.captureException(error);
             return { error };
         }
     }
@@ -184,6 +197,8 @@ module.exports = class Data {
             return { data: result, total: count }
         } 
         catch (error) {
+            if (config.sentryDSN)
+                Sentry.captureException(error);
             return { error };
         }
     }
@@ -221,6 +236,8 @@ module.exports = class Data {
             return { data: result, total: count }
         } 
         catch (error) {
+            if (config.sentryDSN)
+                Sentry.captureException(error);
             return { error };
         }
     }
@@ -248,6 +265,8 @@ module.exports = class Data {
 
             return { data: result }
         } catch (error) {
+            if (config.sentryDSN)
+                Sentry.captureException(error);
             return { error };
         }
     }
