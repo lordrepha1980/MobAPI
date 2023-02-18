@@ -39,7 +39,6 @@ router
 
         result.data = await custom[ctx.params.action]( { body: ctx.request.body, ctx, io } )
         ctx.status  = result.error ? 400 : 200;
-        ctx.body    = result;
     })
 
 router
@@ -68,8 +67,8 @@ router
         }
 
         result.data = await custom[ctx.params.action]( { body: ctx.request.body, ctx, io } )
+
         ctx.status  = result.error ? 400 : 200;
-        ctx.body    = result;
     })
 
 module.exports = router;
