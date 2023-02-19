@@ -54,7 +54,7 @@ class {{ table }} extends Data {
             }
             catch (error) { 
                 debug(error)
-                throw ( error )
+                return { error }
             }
             
         }
@@ -93,8 +93,8 @@ class {{ table }} extends Data {
                 return result
             }
             catch (error) { 
-                console.debug(error)
-                throw ( error )
+                debug(error)
+                return { error }
             }
         }
     {% endblock %}
@@ -132,7 +132,7 @@ class {{ table }} extends Data {
             }
             catch (error) { 
                 debug(error)
-                throw ( error )
+                return { error }
             }
         }
     {% endblock %}
@@ -170,7 +170,7 @@ class {{ table }} extends Data {
             }
             catch (error) { 
                 debug(error)
-                throw ( error )
+                return { error } 
             }
         }
     {% endblock %}
@@ -187,7 +187,7 @@ class {{ table }} extends Data {
             }
             catch (error) { 
                 debug(error)
-                throw ( error )
+                return { error }
             }
         }
     {% endblock %}
