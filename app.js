@@ -14,7 +14,6 @@ const server            = http.createServer(app.callback());
 const fs                = require('fs');
 let sock                = null;
 let init                = null;
-const Sentry            = require("@sentry/node");
 
 if (fs.existsSync(`./server/custom/system/passportStrategy.js`))
     require('./server/custom/system/passportStrategy.js');
@@ -41,16 +40,10 @@ const session           = require('koa-session');
 const router            = new Router();
 
 const config            = require(_dirname + "/config");
+const sentry            = require(_dirname + '/server/database/sentry.js');
 const port              = normalizePort(config.serverPort || "3000");
-
-if ( config.sentryDSN )
-    Sentry.init({
-        ...{
-            dsn: config.sentryDSN,
-            tracesSampleRate: 1.0,
-        },
-        ...config.sentryOptions
-    });
+const Sentry            = new sentry();
+    
 
 app.use(serve(config.publicPath || './public'));
 app.use( koaBody({
@@ -112,12 +105,8 @@ router.use( login.routes() );
 app.use(session({}, app));
 
 app.on("error", (err, ctx) => {
-    if ( config.sentryDSN )
-        Sentry.withScope(scope => {
-            scope.setSDKProcessingMetadata({ request: ctx.request });
-            Sentry.captureException(err);
-        });
-  });
+    Sentry.error(err, ctx)
+});
 
 app
     .use(router.routes())

@@ -10,7 +10,8 @@ const main          = require(_dirname + '/server/app/main');
 const Rights        = require(_dirname + '/server/app/system/rights.js');
 const rights        = new Rights();
 
-const Sentry        = require("@sentry/node");
+const sentry        = require(_dirname + '/server/database/sentry.js');
+const Sentry        = new sentry();
 
 const update = z.object({
     auth:       z.boolean(),
@@ -55,16 +56,6 @@ const count = z.object({
     user:       z.object({}).optional()
 })
 
-if ( config.sentryDSN ) {
-    Sentry.init({
-        ...{
-            dsn: config.sentryDSN,
-            tracesSampleRate: 1.0,
-        },
-        ...config.sentryOptions
-    });
-}
-
 module.exports = class Data {
     
     constructor(  ) {
@@ -84,6 +75,8 @@ module.exports = class Data {
 
     async update ( request ) {
         try{
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query, body: request.body }), category: 'update'})
+
             config.debug.extend && debug('update params: ', request );
 
             update.parse(request)
@@ -129,14 +122,15 @@ module.exports = class Data {
             throw({ error: 'Save abort' })
         } 
         catch (error) {
-            if (config.sentryDSN)
-                Sentry.captureException(error);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async delete ( request ) {
         try{
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'delete'})
+
             config.debug.extend && debug('delete params: ', request );
 
             _delete.parse(request)
@@ -165,14 +159,15 @@ module.exports = class Data {
             throw(res)
         } 
         catch (error) {
-            if (config.sentryDSN)
-                Sentry.captureException(error);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async findOne ( request ) {
         try {
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'findOne'})
+
             config.debug.extend && debug('findOne params: ', request );
 
             findOne.parse(request)
@@ -200,14 +195,15 @@ module.exports = class Data {
             return { data: result, total: count }
         } 
         catch (error) {
-            if (config.sentryDSN)
-                Sentry.captureException(error);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async find ( request ) {
         try {
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'find'})
+
             config.debug.extend && debug('find params: ', request );
 
             if ( !request.auth )
@@ -239,14 +235,15 @@ module.exports = class Data {
             return { data: result, total: count }
         } 
         catch (error) {
-            if (config.sentryDSN)
-                Sentry.captureException(error);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async count ( request ) {
         try {
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'count'})
+
             config.debug.extend && debug('count params: ', request );
 
             count.parse(request);
@@ -268,8 +265,7 @@ module.exports = class Data {
 
             return { data: result }
         } catch (error) {
-            if (config.sentryDSN)
-                Sentry.captureException(error);
+            Sentry.captureException(error);
             return { error };
         }
     }

@@ -1,8 +1,9 @@
 "use strict";
 
 const _dirname      = process.cwd();
-const Custom        = require(_dirname + '/server/database/Custom.js');
-const debug         = require('debug')('app:server:custom');   
+const Custom        = require(_dirname + '/server/database/custom.js');
+const sentry        = require(_dirname + '/server/database/sentry.js');
+const debug         = require('debug')('app:server:Custom');   
 
 const Auth          = require( _dirname + '/server/app/checkAuth.js');
 const auth          = new Auth();
@@ -10,35 +11,23 @@ const auth          = new Auth();
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
 const mob           = new ClassRouter();
 
-const uuid              = require('uuid');
-const config            = require(_dirname + '/config');
+const uuid          = require('uuid');
+const config        = require(_dirname + '/config');
 
-const Sentry            = require("@sentry/node");
-
-if ( config.sentryDSN ) {
-    Sentry.init({
-        ...{
-            dsn: config.sentryDSN,
-            tracesSampleRate: 1.0,
-        },
-        ...config.sentryOptions
-    });
-}
+const Sentry        = new sentry();
 
 {% block main %}{% endblock %}
 
 class {{ function }} extends Custom { 
+        {% block methodConstructor %}
+            constructor() {
+                super();
+            }
+        {% endblock %}
 
-    {% block methodConstructor %}
-        constructor() {
-            super();
-        }
-    {% endblock %}
-
-    {% block methodFunction %}
-        
-    {% endblock %}
-
+        {% block methodFunction %}
+            
+        {% endblock %}
 }
 
 module.exports = {{ function }};
