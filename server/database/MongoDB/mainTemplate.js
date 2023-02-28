@@ -5,7 +5,7 @@ const Data          = require(_dirname + '/server/database/MongoDB/Data.js');
 const GlobalHooks   = require(_dirname + '/server/custom/system/globalHooks.js');
 const DataClass     = new Data();
 const debug         = require('debug')('app:server:database:MongoDB:mainTemplate');
-
+const moment        = require('moment');
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
 const mob           = new ClassRouter();
 const globalHooks   = GlobalHooks();
@@ -28,6 +28,8 @@ class {{ table }} extends Data {
                     await globalHooks.updateBefore( { 
                         io: request.io, 
                         body: request.body, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         auth: request.auth, 
                         noCheck: request.noCheck, 
                         table: request.table,
@@ -37,11 +39,12 @@ class {{ table }} extends Data {
 
                 const result = await super.update( request )
                 {% block updateAfter %}{% endblock %}
-                
                 if ( globalHooks.updateAfter )
                     await globalHooks.updateAfter( { 
                         io: request.io, 
                         body: request.body, 
+                        user: request.ctx?.user,
+                        actions: request.actions,
                         auth: request.auth, 
                         noCheck: request.noCheck, 
                         table: request.table,
@@ -68,6 +71,8 @@ class {{ table }} extends Data {
                     await globalHooks.findOneBefore( { 
                         io: request.io, 
                         body: request.body, 
+                        user: request.ctx?.user,
+                        actions: request.actions,
                         auth: request.auth, 
                         noCheck: request.noCheck, 
                         table: request.table,
@@ -84,6 +89,8 @@ class {{ table }} extends Data {
                         io: request.io, 
                         body: request.body, 
                         auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
@@ -108,6 +115,8 @@ class {{ table }} extends Data {
                         io: request.io, 
                         body: request.body, 
                         auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
@@ -122,6 +131,8 @@ class {{ table }} extends Data {
                         io: request.io, 
                         body: request.body, 
                         auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
@@ -146,6 +157,8 @@ class {{ table }} extends Data {
                         io: request.io, 
                         body: request.body, 
                         auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
@@ -160,6 +173,8 @@ class {{ table }} extends Data {
                         io: request.io, 
                         body: request.body, 
                         auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,

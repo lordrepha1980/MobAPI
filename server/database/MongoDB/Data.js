@@ -82,12 +82,12 @@ module.exports = class Data {
             update.parse(request)
 
             if ( !request.auth )
-                throw('Not Authorized')
+                throw 'Not Authorized'
             
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'update')
                 if ( error )
-                    throw(error)
+                    throw error
             }
             
             if ( request.body && !request.body._id ) {
@@ -119,7 +119,7 @@ module.exports = class Data {
 
             this.closeDb( client );
 
-            throw({ error: 'Save abort' })
+            throw 'Save abort'
         } 
         catch (error) {
             Sentry.captureException(error);
@@ -136,16 +136,16 @@ module.exports = class Data {
             _delete.parse(request)
 
             if ( !request.auth )
-                throw('Not Authorized')
+                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'delete')
                 if ( error )
-                    throw(error)
+                    throw error
             }
 
             if ( Object.keys(request.query).length === 0 )
-                throw('Query Empty')
+                throw 'Query Empty'
 
             const { db, client }     = await this.initDb();
             const res = await db.collection(request.table).deleteOne(
@@ -156,7 +156,7 @@ module.exports = class Data {
             if ( res.acknowledged )
                 return { data: { deletedCount: res.deletedCount, query: request.query } }
 
-            throw(res)
+            throw res
         } 
         catch (error) {
             Sentry.captureException(error);
@@ -173,12 +173,12 @@ module.exports = class Data {
             findOne.parse(request)
 
             if ( !request.auth )
-                throw('Not Authorized')
+                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'find')
                 if ( error )
-                    throw(error)
+                    throw error
             }
 
             const { db, client }     = await this.initDb();
@@ -207,7 +207,7 @@ module.exports = class Data {
             config.debug.extend && debug('find params: ', request );
 
             if ( !request.auth )
-                throw('Not Authorized')
+                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'find')
@@ -249,12 +249,12 @@ module.exports = class Data {
             count.parse(request);
 
             if ( !request.auth )
-                throw('Not Authorized')
+                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'count')
                 if ( error )
-                    throw(error)
+                    throw error
             }
 
             const { db, client }     = await this.initDb();

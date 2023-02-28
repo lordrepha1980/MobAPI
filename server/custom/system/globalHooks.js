@@ -3,28 +3,28 @@ const _dirname      = process.cwd();
 const config        = require(_dirname + '/config.js');
 
 module.exports  = ( app ) => { 
-    const updateBefore = async ({ io, body, auth, noCheck, table, query, ctx }) => { 
+    const updateBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
         config.debug.extend && debug('updateBefore')
     }
-    const updateAfter = async ({ io, body, auth, noCheck, table, query, ctx, result }) => { 
+    const updateAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('updateAfter')
     }
-    const findBefore = async ({ io, body, auth, noCheck, table, query, ctx }) => { 
+    const findBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
         config.debug.extend && debug('findBefore')
     }
-    const findAfter = async ({ io, body, auth, noCheck, table, query, ctx, result }) => { 
+    const findAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('findAfter')
     }
-    const findOneBefore = async ({ io, body, auth, noCheck, table, query, ctx }) => { 
+    const findOneBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
         config.debug.extend && debug('findOneBefore')
     }
-    const findOneAfter = async ({ io, body, auth, noCheck, table, query, ctx, result }) => { 
+    const findOneAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('findOneAfter')
     }
-    const deleteBefore = async ({ io, body, auth, noCheck, table, query, ctx }) => { 
+    const deleteBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
         config.debug.extend && debug('deleteBefore')
     }
-    const deleteAfter = async ({ io, body, auth, noCheck, table, query, ctx, result }) => { 
+    const deleteAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('deleteAfter')
     }
 
