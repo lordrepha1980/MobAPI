@@ -51,15 +51,16 @@ app.use( koaBody({
 }) );
 
 router.use( '/', async ( ctx, next ) => { 
+    
+    const urlArray = ctx.request.url.split('/');
+
     // check Injections
     let injectionCheck = null
-    if ( ctx.params.class )
-        injectionCheck = ctx.params.class.match("(\.\/)")
-
-    if ( ctx.params.table )
-        injectionCheck = ctx.params.table.match("(\.\/)")
+    urlArray.forEach( (url) => {
+        injectionCheck = url.match("^[a-zA-Z0-9\/\-_.]+$")
+    } )
     
-    if ( injectionCheck )
+    if ( !injectionCheck )
         return ctx.throw(400, 'Injection detected');
 
     const auth = function () {
