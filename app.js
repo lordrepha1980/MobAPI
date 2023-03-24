@@ -57,7 +57,7 @@ router.use( '/', async ( ctx, next ) => {
     // check Injections
     let injectionCheck = null
     urlArray.forEach( (url) => {
-        injectionCheck = url.match("^[a-zA-Z0-9\/\-_.]+$")
+        injectionCheck = url.match("^[a-zA-Z0-9\/\-_.?=-]+$")
     } )
     
     if ( !injectionCheck )

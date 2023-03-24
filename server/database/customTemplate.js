@@ -1,7 +1,7 @@
 "use strict";
 
 const _dirname      = process.cwd();
-const Custom        = require(_dirname + '/server/database/custom.js');
+const Custom        = require(_dirname + '/server/database/Custom.js');
 const sentry        = require(_dirname + '/server/database/sentry.js');
 const debug         = require('debug')('app:server:Custom');   
 
