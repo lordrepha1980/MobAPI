@@ -2,7 +2,6 @@
 const debug         = require('debug')('app:server:database:MongoDB:data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const { BarColumnLabelPlacement } = require( 'ag-grid-community' );
 const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
 const z             = require("zod");
