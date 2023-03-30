@@ -2,6 +2,7 @@
 const debug         = require('debug')('app:server:database:MongoDB:data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
+const { BarColumnLabelPlacement } = require( 'ag-grid-community' );
 const uuid          = require('uuid');
 const config        = require(_dirname + '/config');
 const z             = require("zod");
@@ -148,13 +149,16 @@ module.exports = class Data {
                 throw 'Query Empty'
 
             const { db, client }     = await this.initDb();
+            const item = await db.collection(request.table).findOne(
+                request.query
+            )
             const res = await db.collection(request.table).deleteOne(
                 request.query
             );
             this.closeDb( client );
 
             if ( res.acknowledged )
-                return { data: { deletedCount: res.deletedCount, query: request.query } }
+                return { data: true, deletedCount: res.deletedCount, query: request.query, deletedId: item._id }
 
             throw res
         } 
