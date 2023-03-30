@@ -8,7 +8,8 @@ A node.js API
 3. npm i pm2 -g
 4. [Configuration](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#configuration)
 5. create a [server/database/tables.json](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#configuration)
-6. Start server `pm2 start mobapi.config.js`. For windows user use `pm2 start mobapi.config.windows.js`
+6. In the root folder rename `mobapi.config.example.js` or `mobapi.config.windows.example.js` (for windows user) to `mobapi.config.js` 
+7. Start server `pm2 start mobapi.config.js`.
 
 ## Configuration
 Create a file in root with name config.js. Feel free to extend the structure for your own project
