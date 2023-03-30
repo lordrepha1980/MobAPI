@@ -201,7 +201,7 @@ this is the API for `https://url/data/` request.
         user //only server
     }
     
-- table:                Required (String) Databasetable
+- table:                required (String) Databasetable, (Serverside: if is empty default table name is the api endpoint name )
 - query:                (Object) Select data from DB
 - body (only post):     For Update new updated item
 - actions (only post):  Hook for custom actions

@@ -89,7 +89,7 @@ const main = {
                 Template                = `./server/custom/data/${key}.js`;
 
             debug('render Template (DATA): ', key); 
-            const template              = Nunjucks.render(Template, { table: key, database: dbType, _dirname });
+            const template              = Nunjucks.render(Template, { table: key, collection: key,  database: dbType, _dirname });
             //write templates
 
             fs.writeFileSync(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {

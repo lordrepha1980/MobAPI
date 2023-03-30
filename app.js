@@ -97,7 +97,7 @@ if ( sock ) {
 
 if ( init ) {
     debug('init')
-    init.init();
+    init.init(sock);
 }
 
 router.use( data.routes() );

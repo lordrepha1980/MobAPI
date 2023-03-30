@@ -9,6 +9,7 @@ const moment        = require('moment');
 const ClassRouter   = require( _dirname + '/server/database/classRouter.js');
 const mob           = new ClassRouter();
 const globalHooks   = GlobalHooks();
+const defaultCollection = '{{ collection }}';
 
 {% block main %}{% endblock %}
 
@@ -23,6 +24,9 @@ class {{ table }} extends Data {
     {% block methodUpdate %}
         async update( request ) {
             try {
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
                 {% block updateBefore %}{% endblock %}
                 if ( globalHooks.updateBefore )
                     await globalHooks.updateBefore( { 
@@ -66,6 +70,9 @@ class {{ table }} extends Data {
     {% block methodFindeOne %}
         async findOne( request ) {
             try {
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
                 {% block findOneBefore %}{% endblock %}
                 if ( globalHooks.findOneBefore )
                     await globalHooks.findOneBefore( { 
@@ -108,6 +115,9 @@ class {{ table }} extends Data {
 
     {% block methodFind %}
         async find( request ) {
+            if ( request && !request.table )
+                request.table = defaultCollection
+
             try {
                 {% block findBefore %}{% endblock %}
                 if ( globalHooks.findBefore )
@@ -151,6 +161,9 @@ class {{ table }} extends Data {
     {% block methodDelete %}
         async delete( request ) {
             try {
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
                 {% block deleteBefore %}{% endblock %}
                 if ( globalHooks.deleteBefore )
                     await globalHooks.deleteBefore( { 
@@ -192,6 +205,9 @@ class {{ table }} extends Data {
 
     {% block methodCount %}
         async count( request ) {
+            if ( request && !request.table )
+                request.table = defaultCollection
+
             try {
                 {% block countBefore %}{% endblock %}
 
