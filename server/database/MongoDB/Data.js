@@ -63,10 +63,14 @@ module.exports = class Data {
     }
 
     async initDb ( ) {
-        const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
-        let connection          = new Connection();
-        const { db, client }    = await connection.init();     
-        return { db, client };
+        try {
+            const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
+            let connection          = new Connection();
+            const { db, client }    = await connection.init();     
+            return { db, client };
+        } catch (error) {
+            throw error;
+        }
     }
 
     async closeDb ( client ) {
