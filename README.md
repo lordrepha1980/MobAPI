@@ -60,6 +60,20 @@ Example
 
 MongoDB: connect to database without credentials remove key 'database.credentials'
 
+## Database connection definition 
+
+    {
+        "type": "MongoDB",
+        "host": //string or Array(for replica set),
+        "port": //string port,
+        "credentials": {
+            "username": //string,
+            "password": //string
+        },
+        "replicaSet": //string for replica set,
+        "name": //string database name
+    }
+
 ## tables.json:
 With this file you can create data endpoints
 

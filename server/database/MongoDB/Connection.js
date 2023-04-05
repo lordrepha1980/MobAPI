@@ -12,13 +12,29 @@ module.exports = class Connection {
         async init() {
             try {
                 const { MongoClient }   = require('mongodb');
-                let url               = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
+                const ReadPref          = require('mongodb').ReadPreference;
+                let url               = `${config.database.host}:${config.database.port}`;
+
+                if ( Array.isArray(config.database.host) )
+                    url               = `${config.database.host.join(`:${config.database.port},`)}:${config.database.port}`;
 
                 if ( config.database.credentials && config.database.credentials.username && config.database.credentials.password )
-                    url               = `mongodb://${config.database.credentials.username}:${config.database.credentials.password}@${config.database.host}:${config.database.port}/${config.database.name}`;
+                    url               = `${config.database.credentials.username}:${config.database.credentials.password}@${url}`;
+
+                url = `mongodb://${url}/${config.database.name}`;
+
+                if ( config.database.replicaSet )
+                    url      += `/?replicaSet=${config.database.replicaSet}&w=majority`;
 
                 config.debug.extend && debug('MongoDB Connect: ', url );
-                const client            = new MongoClient(url);
+
+                const client            = new MongoClient(
+                    url,
+                    {
+                        readPreference:     ReadPref.NEAREST,
+                        w:                  'majority'
+                    }
+                );
 
                 // Database Name
                 const dbName            = config.database.name || 'defaultDb';
