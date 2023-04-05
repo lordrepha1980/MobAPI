@@ -65,10 +65,10 @@ const main = {
         debug('check Structure: ');
 
         const checks = [
-            //'./server/custom/data',
-            // './server/custom/custom',
-            // './server/custom/custom/post',
-            // './server/custom/custom/get',
+            './server/custom/data',
+            './server/custom/custom',
+            './server/custom/custom/post',
+            './server/custom/custom/get',
             './server/custom/system',
             './server/database/customApi',
             './server/database/customApi/get',
