@@ -157,7 +157,6 @@ Possible hooks in CUSTOMTEMPLATE
 - findBefore / findAfter
 - findOneBefore / findOneAfter
 - deleteBefore / deleteAfter
-- countBefore / countAfter
 
 Possible methodes in CUSTOMTEMPLATE
 - methodConstructor
@@ -165,7 +164,6 @@ Possible methodes in CUSTOMTEMPLATE
 - methodFindeOne
 - methodFind
 - methodDelete
-- methodCount
 
 ### Hook example
     {% block updateBefore %}{% endblock %}

@@ -246,34 +246,4 @@ module.exports = class Data {
             return { error };
         }
     }
-
-    async count ( request ) {
-        try {
-            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'count'})
-
-            config.debug.extend && debug('count params: ', request );
-
-            count.parse(request);
-
-            if ( !request.auth )
-                throw 'Not Authorized'
-
-            if ( config.module.useRights && !request.noCheck ) {
-                const { error } = await rights.check(request, 'count')
-                if ( error )
-                    throw error
-            }
-
-            const { db, client }     = await this.initDb();
-            const count = await db.collection(request.table).countDocuments(
-                request.query
-            );   
-            this.closeDb(client);
-
-            return { data: result }
-        } catch (error) {
-            Sentry.captureException(error);
-            return { error };
-        }
-    }
 }
