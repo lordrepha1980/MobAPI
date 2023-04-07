@@ -24,6 +24,9 @@ class {{ table }} extends Data {
     {% block methodUpdate %}
         async update( request ) {
             try {
+                if ( !request.auth )
+                    throw('Not Authorized')
+
                 if ( request && !request.table )
                     request.table = defaultCollection
 
@@ -70,6 +73,8 @@ class {{ table }} extends Data {
     {% block methodFindeOne %}
         async findOne( request ) {
             try {
+                if ( !request.auth )
+                    throw('Not Authorized')
                 if ( request && !request.table )
                     request.table = defaultCollection
 
@@ -115,10 +120,12 @@ class {{ table }} extends Data {
 
     {% block methodFind %}
         async find( request ) {
-            if ( request && !request.table )
-                request.table = defaultCollection
-
             try {
+                if ( !request.auth )
+                    throw('Not Authorized')
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
                 {% block findBefore %}{% endblock %}
                 if ( globalHooks.findBefore )
                     await globalHooks.findBefore( { 
@@ -161,6 +168,8 @@ class {{ table }} extends Data {
     {% block methodDelete %}
         async delete( request ) {
             try {
+                if ( !request.auth )
+                    throw('Not Authorized')
                 if ( request && !request.table )
                     request.table = defaultCollection
 
@@ -203,22 +212,98 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
-    {% block methodCount %}
-        async count( request ) {
-            if ( request && !request.table )
-                request.table = defaultCollection
-
+    {% block methodDeleteMany %}
+        async deleteMany( request ) {
             try {
-                {% block countBefore %}{% endblock %}
+                if ( !request.auth )
+                    throw('Not Authorized')
 
-                const result = await super.count( request )
+                if ( request && !request.table )
+                    request.table = defaultCollection
 
-                {% block countAfter %}{% endblock %}
+                {% block deleteManyBefore %}{% endblock %}
+                if ( globalHooks.deleteManyBefore )
+                    await globalHooks.deleteManyBefore( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx
+                    } )
+
+                const result = await super.deleteMany( request )
+
+                {% block deleteManyAfter %}{% endblock %}
+                if ( globalHooks.deleteManyAfter )
+                    await globalHooks.deleteManyAfter( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx,
+                        result
+                    } )
                 return result
             }
             catch (error) { 
                 debug(error)
-                return { error }
+                return { error } 
+            }
+        }
+    {% endblock %}
+
+    {% block methodCount %}
+        async count( request ) {
+            try {
+                if ( !request.auth )
+                    throw('Not Authorized')
+                    
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
+                {% block countBefore %}{% endblock %}
+                if ( globalHooks.countBefore )
+                    await globalHooks.countBefore( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx
+                    } )
+
+                const result = await super.count( request )
+
+                {% block countAfter %}{% endblock %}
+                if ( globalHooks.countAfter )
+                    await globalHooks.countAfter( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx,
+                        result
+                    } )
+                return result
+            }
+            catch (error) { 
+                debug(error)
+                return { error } 
             }
         }
     {% endblock %}

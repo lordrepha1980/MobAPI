@@ -9,6 +9,12 @@ module.exports  = ( app ) => {
     const updateAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('updateAfter')
     }
+    const updateManyBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
+        config.debug.extend && debug('updateManyBefore')
+    }
+    const updateManyAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
+        config.debug.extend && debug('updateManyAfter')
+    }
     const findBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
         config.debug.extend && debug('findBefore')
     }
@@ -27,15 +33,33 @@ module.exports  = ( app ) => {
     const deleteAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
         config.debug.extend && debug('deleteAfter')
     }
+    const deleteManyBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
+        config.debug.extend && debug('deleteManyBefore')
+    }
+    const deleteManyAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
+        config.debug.extend && debug('deleteManyAfter')
+    }
+    const countBefore = async ({ io, body, auth, noCheck, table, query, ctx, user, actions }) => { 
+        config.debug.extend && debug('countBefore')
+    }
+    const countAfter = async ({ io, body, auth, noCheck, table, query, ctx, result, user, actions }) => { 
+        config.debug.extend && debug('countAfter')
+    }
 
     return {
         updateBefore,
         updateAfter,
+        updateManyBefore,
+        updateManyAfter,
         findBefore,
         findAfter,
         findOneBefore,
         findOneAfter,
         deleteBefore,   
-        deleteAfter
+        deleteAfter,
+        deleteManyBefore,
+        deleteManyAfter,
+        countBefore,
+        countAfter,
     }
 }

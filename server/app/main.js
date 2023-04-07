@@ -46,6 +46,19 @@ const main = {
         }
 
     },
+    writeAuthFunction(template) {
+        const authMethodsRegExp = /\/\/======= begin custom auth methods =======\r?\n([\s\S]*?)\/\/======= end custom auth methods =======/m;
+        const matches = authMethodsRegExp.exec(template);
+        if (matches) {
+            const authMethodsCode = matches[1];
+            const modifiedCode = authMethodsCode.replace(/(^|\r?\n)\s*async\s+(\w+)\s*\((.*?)\)\s*{/g, (match, p1, p2, p3) => {
+                return `${p1}async ${p2} (${p3}) {\nif((!ctx || !ctx.auth) && (!auth || typeof auth !== 'boolean')) { if (ctx) {ctx.body = {error: 'Not Authorized'}} return {error: 'Not Authorized'} }`;
+            });
+            template = template.replace(authMethodsRegExp, `//======= begin custom auth methods =======\n${modifiedCode}//======= end custom auth methods =======`);
+        }
+
+        return template
+    },
     getModule: (module) => {
         return Object.entries(require.cache).reduce((acc, [module_path, loaded_module]) => {
 
@@ -90,8 +103,8 @@ const main = {
 
             debug('render Template (DATA): ', key); 
             const template              = Nunjucks.render(Template, { table: key, collection: key,  database: dbType, _dirname });
-            //write templates
 
+            //write templates
             fs.writeFileSync(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {
                 if (err) 
                     reject(err);
@@ -108,7 +121,10 @@ const main = {
                     const Template                = `./server/custom/custom/get/${file}`;
                     debug('render Template (CUSTOM GET): ', file); 
 
-                    const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname  });
+
+                    template = main.writeAuthFunction(template)
+
                     //write templates
                     fs.writeFileSync(`./server/database/customApi/get/${file}`, template, err => {
                         if (err) {
@@ -127,7 +143,10 @@ const main = {
                     const Template                = `./server/custom/custom/post/${file}`;
                     debug('render Template (CUSTOM POST): ', file); 
 
-                    const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    
+                    template = main.writeAuthFunction(template)
+
                     //write templates
                     fs.writeFileSync(`./server/database/customApi/post/${file}`, template, err => {
                         if (err) {

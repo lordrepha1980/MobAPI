@@ -152,18 +152,18 @@ Methode
     {% endblock %}
 
 ## Hooks / Methodes
-Possible hooks in CUSTOMTEMPLATE
+Possible hooks in DATATEMPLATE
 - updateBefore / updateAfter
+- updateManyBefore / updateManyAfter
 - findBefore / findAfter
 - findOneBefore / findOneAfter
 - deleteBefore / deleteAfter
+- deleteManyBefore / deleteManyAfter
 
 Possible methodes in CUSTOMTEMPLATE
 - methodConstructor
-- methodUpdate
-- methodFindeOne
-- methodFind
-- methodDelete
+- methodFunction 
+- methodFunctionAuth (All async functions check if authenticated true)
 
 ### Hook example
     {% block updateBefore %}{% endblock %}
@@ -197,7 +197,9 @@ this is the API for `https://url/data/` request.
     find 
     findOne
     delete
+    deleteMany
     update
+    updateMany
     count
     
 ## get/post Parameter
@@ -276,13 +278,19 @@ this template is for custom/data/:table request
     //insert hooks or methods here 
     
 ## default CUSTOM Template
-this template is for custom/custom/:class request
+This template is for custom/custom/:class request.
+
+The `methodeFunctionAuth` Block inserted in every `async` function a check if user auth
 
     {% extends _dirname + '/server/database/customTemplate.js' %}
 
     {% block main %}{% endblock %}
 
     {% block methodFunction %}
+        //write methods here
+    {% endblock %} 
+
+    {% block methodFunctionAuth %}
         //write methods here
     {% endblock %} 
 
@@ -321,6 +329,21 @@ Google-API
         }
         
         Now you can call url/custom/googleApi/getDirection
+    {% endblock %}
+
+    {% block methodFunctionAuth %} 
+        async getFooBar ( { ctx, auth } ) {
+            try {
+                //the methodeFunctionAuth block check automaticly if user logged in
+                //await auth.check(ctx) 
+                //if you call this function without a auth this line doesnt reach
+                ctx.body = { data: 'foo:bar' }
+            } catch (error) {
+                console.log('custom getDirection error: ' + error)
+            }
+        }
+        
+        Now you can call url/custom/googleApi/getFooBar
     {% endblock %}
     
 Update user with google direction;
