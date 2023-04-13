@@ -28,6 +28,12 @@ class {{ function }} extends Custom {
         {% block methodFunction %}
             
         {% endblock %}
+
+        //======= begin custom auth methods =======
+        {% block methodFunctionAuth %}
+            
+        {% endblock %}
+        //======= end custom auth methods =======
 }
 
 module.exports = {{ function }};

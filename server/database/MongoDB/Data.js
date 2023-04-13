@@ -74,20 +74,21 @@ module.exports = class Data {
     }
 
     async closeDb ( client ) {
-        client.close()
+        if ( client )
+            client.close()
     }
 
     async update ( request ) {
         try{
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query, body: request.body }), category: 'update'})
 
             config.debug.extend && debug('update params: ', request );
 
             update.parse(request)
 
-            if ( !request.auth )
-                throw 'Not Authorized'
-            
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'update')
                 if ( error )
@@ -134,14 +135,14 @@ module.exports = class Data {
 
     async delete ( request ) {
         try{
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'delete'})
 
             config.debug.extend && debug('delete params: ', request );
 
             _delete.parse(request)
-
-            if ( !request.auth )
-                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'delete')
@@ -175,14 +176,14 @@ module.exports = class Data {
 
     async deleteMany ( request ) {
         try{
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'deleteMany'})
 
             config.debug.extend && debug('deleteMany params: ', request );
 
             _delete.parse(request)
-
-            if ( !request.auth )
-                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'delete')
@@ -220,14 +221,14 @@ module.exports = class Data {
 
     async findOne ( request ) {
         try {
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'findOne'})
 
             config.debug.extend && debug('findOne params: ', request );
 
             findOne.parse(request)
-
-            if ( !request.auth )
-                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'find')
@@ -257,12 +258,12 @@ module.exports = class Data {
 
     async find ( request ) {
         try {
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'find'})
 
             config.debug.extend && debug('find params: ', request );
-
-            if ( !request.auth )
-                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'find')
@@ -298,14 +299,14 @@ module.exports = class Data {
 
     async count ( request ) {
         try {
+            if ( !request.auth )
+                throw 'Not Authorized'
+
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'count'})
 
             config.debug.extend && debug('count params: ', request );
 
             count.parse(request);
-
-            if ( !request.auth )
-                throw 'Not Authorized'
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'count')
