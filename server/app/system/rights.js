@@ -22,7 +22,7 @@ module.exports = class Rights {
         config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: usr } = await userApi.findOne(
-                { table: 'user', auth: true, noCheck: true, query: { _id: bodyParse?.user?._id || null } }
+                { auth: true, noCheck: true, query: { _id: bodyParse?.user?._id || null } }
             );
 
             let rights = [];
