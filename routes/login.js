@@ -14,9 +14,6 @@ const register          = new (main.getModule('/system/register.js'))();
 const login             = new (main.getModule('/system/auth.js'))();
 const logout            = new (main.getModule('/system/logout.js'))();
 
-
-//todoo check custom files
-
 const router    = new Router({
     prefix: '/auth'
 });
@@ -35,7 +32,7 @@ if ( config.module.useSignin ) {
             if ( !ctx.request.body?.body || !ctx.request.body.body.username || !ctx.request.body.body.password ) {
                 debug("Please set username and password")
                 ctx.status  = 400;
-                ctx.body    = "Please set username and password";
+                ctx.body    = { error: "Please set username and password" };
                 return
             }
     
@@ -51,19 +48,9 @@ if ( config.module.useSignin ) {
             const token = await login.checkUser(ctx.request.body);
     
             ctx.status  = token.error ? 400 : 200;
-            ctx.body    = token ? { data: { token } } : 'User not found';
+            ctx.body    = token ? { data: { token } } : { error: 'User not found' };
             
         })
-
-    // router
-    //     .get("/", async (ctx) => {
-
-    //         const token = await login.checkUser(ctx.request.body);
-    
-    //         ctx.status  = token.error ? 400 : 200;
-    //         ctx.body    = token ? { data: { token } } : 'User not found';
-            
-    //     })
     
     router
         .get("/logout", async (ctx) => {
@@ -82,7 +69,7 @@ if ( config.module.useRegister ) {
 
             if ( !ctx.request.body?.body || !ctx.request.body.body.username || !ctx.request.body.body.password ) {
                 debug("Please set username and password")
-                ctx.body = "Please set username and password";
+                ctx.body = { error: "Please set username and password" }
                 return
             }
 
