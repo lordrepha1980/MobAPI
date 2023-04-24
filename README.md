@@ -211,6 +211,7 @@ this is the API for `https://url/data/` request.
         sort,
         skip,
         limit,
+        projection,
         auth, //only server
         noCheck, // only Server
         user //only server
@@ -223,6 +224,7 @@ this is the API for `https://url/data/` request.
 - sort:                 Sort result from the database
 - skip:                 Skip lines from the database
 - limit:                Max lines from database 
+- projection:           (Object) return fields from the Record
 - auth:                 Required (boolean) true / false is user login ( only server parameter )
 - noCheck:              (boolean) check permission ( only server parameter )
 - user:                 (Object) the user ( only server parameter )

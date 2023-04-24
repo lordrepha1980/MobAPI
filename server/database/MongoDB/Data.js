@@ -239,10 +239,8 @@ module.exports = class Data {
             const { db, client }     = await this.initDb();
             const result = await db.collection(request.table).findOne(
                 request.query,
-                {
-                    projection: request.project || {}
-                }
             )
+            .project( request.projection || {} )
             
             const count = await db.collection(request.table).count();
             this.closeDb(client);
@@ -276,7 +274,7 @@ module.exports = class Data {
             const result = await db.collection(request.table).find(
                 request.query
             )
-            .project( request.project || {} )
+            .project( request.projection || {} )
             .sort( request.sort || null )
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
