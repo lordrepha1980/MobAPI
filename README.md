@@ -6,7 +6,7 @@ Install a 100% free HLM (happy little monitor) monitoring tool
 writen with MobAPI [go to HLM](https://github.com/lordrepha1980/Happy-Little-Monitor.git)
 
 ## Installation
-you can use the [NPM CLI] (https://github.com/lordrepha1980/generator-mobapi) to install/update MobAPI (best practice)
+you can use the [NPM CLI] (https://www.npmjs.com/package/generator-mobapi) to install/update MobAPI (best practice)
 
 or standalone
 1. git clone `https://github.com/lordrepha1980/MobAPI.git`
