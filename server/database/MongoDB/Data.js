@@ -79,6 +79,7 @@ module.exports = class Data {
     }
 
     async update ( request ) {
+        const { db, client }    = await this.initDb();
         try{
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -134,6 +135,7 @@ module.exports = class Data {
     }
 
     async delete ( request ) {
+        const { db, client }     = await this.initDb();
         try{
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -153,7 +155,6 @@ module.exports = class Data {
             if ( Object.keys(request.query).length === 0 )
                 throw 'Query Empty'
 
-            const { db, client }     = await this.initDb();
             const item = await db.collection(request.table).findOne(
                 request.query
             )
@@ -175,6 +176,7 @@ module.exports = class Data {
     }
 
     async deleteMany ( request ) {
+        const { db, client }     = await this.initDb()
         try{
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -194,7 +196,6 @@ module.exports = class Data {
             if ( Object.keys(request.query).length === 0 )
                 throw 'Query Empty'
 
-            const { db, client }     = await this.initDb()
             const items = await db.collection(request.table).find(
                 request.query
             )
@@ -220,6 +221,7 @@ module.exports = class Data {
     }
 
     async findOne ( request ) {
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -236,7 +238,6 @@ module.exports = class Data {
                     throw error
             }
 
-            const { db, client }     = await this.initDb();
             const result = await db.collection(request.table).findOne(
                 request.query,
             )
@@ -255,6 +256,7 @@ module.exports = class Data {
     }
 
     async find ( request ) {
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -268,8 +270,6 @@ module.exports = class Data {
                 if ( error )
                     throw(error)
             }
-            
-            const { db, client }     = await this.initDb();
 
             const result = await db.collection(request.table).find(
                 request.query
@@ -296,6 +296,7 @@ module.exports = class Data {
     }
 
     async count ( request ) {
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
                 throw 'Not Authorized'
@@ -312,7 +313,6 @@ module.exports = class Data {
                     throw error
             }
 
-            const { db, client }     = await this.initDb();
             const count = await db.collection(request.table).countDocuments(
                 request.query
             );   
