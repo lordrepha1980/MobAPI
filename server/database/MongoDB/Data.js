@@ -221,6 +221,7 @@ module.exports = class Data {
     }
 
     async findOne ( request ) {
+
         const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
@@ -240,8 +241,8 @@ module.exports = class Data {
 
             const result = await db.collection(request.table).findOne(
                 request.query,
+                request.projection || {}
             )
-            .project( request.projection || {} )
             
             const count = await db.collection(request.table).count();
             this.closeDb(client);
@@ -272,9 +273,9 @@ module.exports = class Data {
             }
 
             const result = await db.collection(request.table).find(
-                request.query
+                request.query,
+                request.projection || {}
             )
-            .project( request.projection || {} )
             .sort( request.sort || null )
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
