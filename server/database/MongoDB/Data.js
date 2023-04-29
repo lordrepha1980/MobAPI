@@ -240,12 +240,13 @@ module.exports = class Data {
             }
 
             const result = await db.collection(request.table).findOne(
-                request.query
-            ).project(
-                request.project || {}
+                request.query,
+                {
+                    projection: request.project || {}
+                }
             )
             
-            const count = await db.collection(request.table).count();
+            const count = await db.collection(request.table).count()
             this.closeDb(client);
 
             return { data: result, total: count }
