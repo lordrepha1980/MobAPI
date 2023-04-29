@@ -240,7 +240,8 @@ module.exports = class Data {
             }
 
             const result = await db.collection(request.table).findOne(
-                request.query,
+                request.query
+            ).project(
                 request.project || {}
             )
             
@@ -274,8 +275,8 @@ module.exports = class Data {
 
             const result = await db.collection(request.table).find(
                 request.query,
-                request.project || {}
             )
+            .project( request.project || {} )
             .sort( request.sort || null )
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
