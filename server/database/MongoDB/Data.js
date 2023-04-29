@@ -241,7 +241,7 @@ module.exports = class Data {
 
             const result = await db.collection(request.table).findOne(
                 request.query,
-                request.projection || {}
+                request.project || {}
             )
             
             const count = await db.collection(request.table).count();
@@ -274,7 +274,7 @@ module.exports = class Data {
 
             const result = await db.collection(request.table).find(
                 request.query,
-                request.projection || {}
+                request.project || {}
             )
             .sort( request.sort || null )
             .skip( request.skip || 0 )

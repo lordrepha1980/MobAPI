@@ -90,7 +90,7 @@ class {{ table }} extends Data {
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
-                        projection: request.projection,
+                        project: request.project,
                         ctx: request.ctx,
                     } )
 
@@ -107,7 +107,7 @@ class {{ table }} extends Data {
                         user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
-                        projection: request.projection,
+                        project: request.project,
                         query: request.query,
                         ctx: request.ctx,
                         result
@@ -138,7 +138,7 @@ class {{ table }} extends Data {
                         noCheck: request.noCheck, 
                         table: request.table,
                         query: request.query,
-                        projection: request.projection,
+                        project: request.project,
                         ctx: request.ctx
                     } )
 
@@ -154,7 +154,7 @@ class {{ table }} extends Data {
                         user: request.ctx?.user,
                         noCheck: request.noCheck, 
                         table: request.table,
-                        projection: request.projection,
+                        project: request.project,
                         query: request.query,
                         ctx: request.ctx,
                         result
