@@ -88,6 +88,9 @@ module.exports = class Data {
 
             config.debug.extend && debug('update params: ', request );
 
+            if ( request.cmd && !request.body )
+                request.body = {}
+
             update.parse(request)
 
             if ( config.module.useRights && !request.noCheck ) {

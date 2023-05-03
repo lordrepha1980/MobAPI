@@ -1,6 +1,6 @@
 {
   "name": "MobAPI",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "private": true,
   "dependencies": {
     "@koa/cors": "^3.3.0",
