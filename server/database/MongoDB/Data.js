@@ -109,7 +109,6 @@ module.exports = class Data {
 
             let query   = request.query || { _id: request.body._id }
 
-            const { db, client }    = await this.initDb();
             const res = await db.collection(request.table).updateOne(
                 query, 
                 request.cmd ? request.cmd : { $set: 

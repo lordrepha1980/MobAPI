@@ -38,11 +38,12 @@ module.exports = class Secret {
         }
     }
 
-    db () { 
+    async db () { 
         try{
             const connection = new Connection();
             
-            return connection.init();
+            const { db, client }    = await connection.init();     
+            return { db, client };
         } 
         catch (error) {
             console.error(error);
