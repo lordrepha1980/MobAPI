@@ -50,16 +50,13 @@ Example
         },
         "module": {
             "defaultSignin":    true,
-            "defaultRegister":  true
-        }
-    }
-
-MongoDB: connect to database without credentials remove key 'database.credentials'
-=======
+            "defaultRegister":  true,
             "useSignin":    true,
             "useRegister":  false
         }
     }
+
+MongoDB: connect to database without credentials remove key 'database.credentials'
 
 - publicPath - default 'public'. This is the directory for index.html
 - database - database connection definition
