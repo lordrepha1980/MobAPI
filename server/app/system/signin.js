@@ -2,7 +2,7 @@
 const debug         = require('debug')('app:server:app:system:register');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 
 const Auth = require( _dirname + '/server/app/system/auth.js');
 const auth = new Auth()

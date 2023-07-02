@@ -1,6 +1,7 @@
 "use strict";
 const _dirname  = process.cwd()
-const config    = require( _dirname + "/config.json");
+const config    = require( _dirname + "/config");
+const debug     = require('debug')('app:server:database:MongoDB:connection');
 
 module.exports = class Connection { 
         
@@ -9,21 +10,43 @@ module.exports = class Connection {
         }
 
         async init() {
-            const { MongoClient }   = require('mongodb');
-            let url               = `mongodb://${config.database.host}:${config.database.port}/${config.database.name}`;
+            try {
+                const { MongoClient }   = require('mongodb');
+                const ReadPref          = require('mongodb').ReadPreference;
+                let url               = `${config.database.host}:${config.database.port}`;
 
-            if ( config.database.credentials )
-                url               = `mongodb://${config.database.credentials.user}:${config.database.credentials.password}@${config.database.host}:${config.database.port}/${config.database.name}`;
+                if ( Array.isArray(config.database.host) )
+                    url               = `${config.database.host.join(`:${config.database.port},`)}:${config.database.port}`;
 
-            const client            = new MongoClient(url);
+                if ( config.database.credentials && config.database.credentials.username && config.database.credentials.password )
+                    url               = `${config.database.credentials.username}:${config.database.credentials.password}@${url}`;
 
-            // Database Name
-            const dbName            = config.database.name || 'defaultDb';
+                url = `mongodb://${url}/${config.database.name}`;
 
-            await client.connect();
-            const db                = client.db(dbName);
-            
-            return db
+                if ( config.database.replicaSet )
+                    url      += `/?replicaSet=${config.database.replicaSet}&w=majority`;
+
+                config.debug.extend && debug('MongoDB Connect: ', url );
+
+                const client            = new MongoClient(
+                    url,
+                    {
+                        readPreference:     ReadPref.NEAREST,
+                        w:                  'majority'
+                    }
+                );
+
+                // Database Name
+                const dbName            = config.database.name || 'defaultDb';
+
+                await client.connect();
+                const db                = client.db(dbName);
+                
+                return { db, client }
+            } catch (error) {
+                debug(error)
+                throw error ;
+            }
         }
         
 }

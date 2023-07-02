@@ -1,9 +1,60 @@
 "use strict";
-const debug         = require('debug')('app:server:database:MongoDB:Data');
+const debug         = require('debug')('app:server:database:MongoDB:data');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
 const uuid          = require('uuid');
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
+const z             = require("zod");
+
+const main          = require(_dirname + '/server/app/main');
+const Rights        = require(_dirname + '/server/app/system/rights.js');
+const rights        = new Rights();
+
+const sentry        = require(_dirname + '/server/database/sentry.js');
+const Sentry        = new sentry();
+
+const update = z.object({
+    auth:       z.boolean(),
+    table:      z.string(),
+    body:       z.object({}),
+    query:      z.object({
+        _id:        z.string().optional()
+    }).optional(),
+    cmd:        z.object({}).optional(),
+    options:    z.object({}).optional(),
+    user:       z.object({}).optional()
+});
+
+const _delete = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
+
+const findOne = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
+
+const find = z.object({
+    auth:       z.boolean(),
+    query:      z.object({}),
+    table:      z.string(),
+    sort:       z.object({}).optional(),
+    skip:       z.number().optional(),
+    limit:      z.number().optional(),
+    user:       z.object({}).optional()
+})
+
+const count = z.object({ 
+    auth:       z.boolean(),
+    table:      z.string(),
+    query:      z.object({}),
+    user:       z.object({}).optional()
+})
 
 module.exports = class Data {
     
@@ -12,39 +63,55 @@ module.exports = class Data {
     }
 
     async initDb ( ) {
-        const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
-        let connection          = new Connection();
-        const db                = await connection.init();     
-        return db;
+        try {
+            const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
+            let connection          = new Connection();
+            const { db, client }    = await connection.init();     
+            return { db, client };
+        } catch (error) {
+            throw error;
+        }
     }
 
+    async closeDb ( client ) {
+        if ( client )
+            client.close()
+    }
 
     async update ( request ) {
+        const { db, client }    = await this.initDb();
         try{
             if ( !request.auth )
-                throw('Unauthorized')
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query, body: request.body }), category: 'update'})
 
             config.debug.extend && debug('update params: ', request );
 
-            if ( !request.auth )
-                throw('Unauthorized')
+            if ( request.cmd && !request.body )
+                request.body = {}
 
-            const db = await this.initDb();
+            update.parse(request)
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'update')
+                if ( error )
+                    throw error
+            }
             
-            if ( request.body && request.body._id ) {
-                if ( !request.query )
-                    request.query = {}
-
-                request.query._id = request.body._id;
-            } else {
+            if ( request.body && !request.body._id ) {
                 const id = uuid.v4();
-                console.error('No _id found in body generate ID: ', id);
                 request.body._id    = id;
             }
 
+            if ( request.query && request.query._id )
+                request.body._id = request.query._id;
+
+            let query   = request.query || { _id: request.body._id }
+
             const res = await db.collection(request.table).updateOne(
-                request.query || { _id: request.body._id }, 
-                { $set: 
+                query, 
+                request.cmd ? request.cmd : { $set: 
                     request.body || {}
                 },
                 request.options || { upsert: true }
@@ -52,104 +119,213 @@ module.exports = class Data {
 
             if ( res.acknowledged ) {
                 const result = await db.collection(request.table).findOne(
-                    { _id: request.body._id }
-                );
-
-                return { data: result, inserted: res.upsertedId ? true : undefined }
+                    { _id: query._id }
+                )
+                this.closeDb( client );
+                return { data: result, inserted: res.upsertedId ? true : false, updated: res.modifiedCount > 0 ? true : false, matched: res.matchedCount > 0 ? true : false }
             }
 
-            throw({ error: 'Save abort' })
+            this.closeDb( client );
+
+            throw 'Save abort'
         } 
         catch (error) {
-            console.error(error);
+            this.closeDb(client);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async delete ( request ) {
+        const { db, client }     = await this.initDb();
         try{
             if ( !request.auth )
-                throw('Unauthorized')
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'delete'})
 
             config.debug.extend && debug('delete params: ', request );
 
-            const db = await this.initDb();
+            _delete.parse(request)
 
-            if ( !request.query || Object.keys(request.query).length === 0 )
-                throw('No query found')
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'delete')
+                if ( error )
+                    throw error
+            }
 
+            if ( Object.keys(request.query).length === 0 )
+                throw 'Query Empty'
+
+            const item = await db.collection(request.table).findOne(
+                request.query
+            )
             const res = await db.collection(request.table).deleteOne(
                 request.query
             );
+            this.closeDb( client );
 
             if ( res.acknowledged )
-                return { data: res.deletedCount }
+                return { data: true, deletedCount: res.deletedCount, query: request.query, deletedId: item._id }
 
-            throw(res)
+            throw res
         } 
         catch (error) {
-            console.error(error);
+            this.closeDb(client);
+            Sentry.captureException(error);
+            return { error };
+        }
+    }
+
+    async deleteMany ( request ) {
+        const { db, client }     = await this.initDb()
+        try{
+            if ( !request.auth )
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'deleteMany'})
+
+            config.debug.extend && debug('deleteMany params: ', request );
+
+            _delete.parse(request)
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'delete')
+                if ( error )
+                    throw error
+            }
+
+            if ( Object.keys(request.query).length === 0 )
+                throw 'Query Empty'
+
+            const items = await db.collection(request.table).find(
+                request.query
+            )
+
+            if (items && items.length > 0)
+                items = items.map( item => item._id )
+
+            const res = await db.collection(request.table).deleteMany(
+                request.query
+            );
+            this.closeDb( client );
+
+            if ( res.acknowledged )
+                return { data: true, deletedCount: res.deletedCount, query: request.query, deletedIds: items || [] }
+
+            throw res
+        } 
+        catch (error) {
+            this.closeDb(client);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async findOne ( request ) {
+
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
-                throw('Unauthorized')
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'findOne'})
 
             config.debug.extend && debug('findOne params: ', request );
-            const db = await this.initDb();
+
+            findOne.parse(request)
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'find')
+                if ( error )
+                    throw error
+            }
 
             const result = await db.collection(request.table).findOne(
-                request.query
-            );
+                request.query,
+                {
+                    projection: request.project || {}
+                }
+            )
+            
+            const count = await db.collection(request.table).count()
+            this.closeDb(client);
 
-            return { data: result }
-        } catch (error) {
-            console.error(error);
+            return { data: result, total: count }
+        } 
+        catch (error) {
+            this.closeDb(client);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async find ( request ) {
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
-                throw('Unauthorized')
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'find'})
 
             config.debug.extend && debug('find params: ', request );
-            const db = await this.initDb();
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'find')
+                if ( error )
+                    throw(error)
+            }
 
             const result = await db.collection(request.table).find(
-                request.query
+                request.query,
             )
+            .project( request.project || {} )
             .sort( request.sort || null )
             .skip( request.skip || 0 )
             .limit( request.limit || 0 )
             .toArray();
+            
+            const count = await db.collection(request.table).countDocuments(
+                request.query
+            );
 
-            return { data: result }
-        } catch (error) {
-            console.error(error);
+            this.closeDb(client);
+
+            return { data: result, total: count }
+        } 
+        catch (error) {
+            this.closeDb(client);
+            Sentry.captureException(error);
             return { error };
         }
     }
 
     async count ( request ) {
+        const { db, client }     = await this.initDb();
         try {
             if ( !request.auth )
-                throw('Unauthorized')
+                throw 'Not Authorized'
+
+            Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'count'})
 
             config.debug.extend && debug('count params: ', request );
-            const db = await this.initDb();
 
-            const result = await db.collection(request.table).count(
+            count.parse(request);
+
+            if ( config.module.useRights && !request.noCheck ) {
+                const { error } = await rights.check(request, 'count')
+                if ( error )
+                    throw error
+            }
+
+            const count = await db.collection(request.table).countDocuments(
                 request.query
-            );
+            );   
+            this.closeDb(client);
 
-            return { data: result }
+            return { data: count }
         } catch (error) {
-            console.error(error);
+            Sentry.captureException(error);
             return { error };
         }
     }

@@ -3,12 +3,17 @@ const debug         = require('debug')('app:server:app:system:register');
 const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
+const bcryptSalt    = config.bcrypt.saltRounds;
+let user            = null
 
-const bycryptSalt   = 10;
-
-const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
-const user = new User()
+try{
+    const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
+    user = new User()
+}
+catch(error) {
+    debug('register error:', error)
+}
 
 module.exports = class Register {
     
@@ -16,20 +21,21 @@ module.exports = class Register {
 
     }
 
-    async register ( bodyParse ) { 
-        config.debug.extend && debug('register params: ', bodyParse );
+    async register ( {body, ctx} ) { 
+
+        config.debug.extend && debug('register params: ', body );
         try {
-            const {data: userExists} = await user.findOne({ table: 'user', query: { username: bodyParse.body.username }, auth: true, actions: { register: true, auth: true } });
+            const {data: userExists} = await user.findOne({ ctx, noCheck: true, query: { username: body.body.username }, auth: true, actions: { register: true, auth: true } });
 
             if ( userExists )
                 throw ("User already exists");
 
-            const hash = await bcrypt.hash( bodyParse.body.password, bycryptSalt )
+            const hash = await bcrypt.hash( body.body.password, bcryptSalt )
             
             if ( hash )
-                bodyParse.body.password = hash
+                body.body.password = hash
 
-            const { data: createdUser } = await user.update({ table: 'user', body: bodyParse.body, auth: true, actions: { register: true, auth: true } });
+            const { data: createdUser } = await user.update({ ctx, body: body.body, noCheck: true, auth: true, actions: { register: true, auth: true } });
 
             if ( createdUser )
                 delete createdUser.password;

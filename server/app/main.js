@@ -1,9 +1,10 @@
 const _dirname              = process.cwd();
 const tables                = require(_dirname + "/server/database/tables.json");
-const config                = require(_dirname + "/config.json");
+const config                = require(_dirname + "/config");
 const dbType                = config.database.type;
 const fs                    = require('fs');  
 const fsPromise             = require('fs/promises');    
+const debug                 = require('debug')('app:server:app:main');
 
 const Nunjucks              = require("nunjucks");   
 
@@ -30,6 +31,13 @@ const main = {
             require(_dirname + '/server/app/system/auth.js');
         }
 
+        //rights
+        try {
+            require(_dirname + '/server/custom/system/rights.js');
+        } catch (error) {
+            require(_dirname + '/server/app/system/rights.js');
+        }
+
         //logout
         try {
             require(_dirname + '/server/custom/system/logout.js');
@@ -37,6 +45,19 @@ const main = {
             require(_dirname + '/server/app/system/logout.js');
         }
 
+    },
+    writeAuthFunction(template) {
+        const authMethodsRegExp = /\/\/======= begin custom auth methods =======\r?\n([\s\S]*?)\/\/======= end custom auth methods =======/m;
+        const matches = authMethodsRegExp.exec(template);
+        if (matches) {
+            const authMethodsCode = matches[1];
+            const modifiedCode = authMethodsCode.replace(/(^|\r?\n)\s*async\s+(\w+)\s*\((.*?)\)\s*{/g, (match, p1, p2, p3) => {
+                return `${p1}async ${p2} (${p3}) {\nif((!ctx || !ctx.auth) && (!auth || typeof auth !== 'boolean')) { if (ctx) {ctx.body = {error: 'Not Authorized'}} return {error: 'Not Authorized'} }`;
+            });
+            template = template.replace(authMethodsRegExp, `//======= begin custom auth methods =======\n${modifiedCode}//======= end custom auth methods =======`);
+        }
+
+        return template
     },
     getModule: (module) => {
         return Object.entries(require.cache).reduce((acc, [module_path, loaded_module]) => {
@@ -53,27 +74,22 @@ const main = {
             return loaded_module.exports;
           }, undefined);
     },
-    initDatabase: async () =>{ 
-        console.log('init Database: ', dbType);
-
-        if ( dbType === 'MongoDB' ) {
-            const Connection        = require('../database/MongoDB/Connection.js');
-            let connection          = new Connection();
-            const db                = await connection.init();        }
-    },
     checkStructure: async () =>{ 
-        console.log('check Structure: ');
+        debug('check Structure: ');
 
         const checks = [
             './server/custom/data',
             './server/custom/custom',
+            './server/custom/custom/post',
+            './server/custom/custom/get',
             './server/custom/system',
             './server/database/customApi',
+            './server/database/customApi/get',
+            './server/database/customApi/post',
             './server/database/MongoDB/dataApi'
         ];
-
         for (let i = 0; i < checks.length; i++)
-            fs.mkdirSync(checks[i], {recursive: true})
+            fs.mkdirSync(checks[i], {recursive: true, mode: '777'})
     },
     generateTables: async function() {
         //generate tables für DATA
@@ -85,10 +101,10 @@ const main = {
             if ( fs.existsSync(`./server/custom/data/${key}.js`) )
                 Template                = `./server/custom/data/${key}.js`;
 
-            console.log('render Template (DATA): ', Template); 
-            const template              = Nunjucks.render(Template, { table: key, database: dbType, _dirname });
-            //write templates
+            debug('render Template (DATA): ', key); 
+            const template              = Nunjucks.render(Template, { table: key, collection: key,  database: dbType, _dirname });
 
+            //write templates
             fs.writeFileSync(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {
                 if (err) 
                     reject(err);
@@ -97,19 +113,44 @@ const main = {
           
         }
 
-        //generate tables für Custom
+        //generate tables für Custom GET
         if ( fs.existsSync(`./server/custom/custom`) ) {
-            fs.readdir(`./server/custom/custom`, (err, files) => {
+            fs.readdir(`./server/custom/custom/get`, (err, files) => {
                 files.forEach(file => {
 
-                    const Template                = `./server/custom/custom/${file}`;
-                    console.log('render Template (CUSTOM): ', Template); 
+                    const Template                = `./server/custom/custom/get/${file}`;
+                    debug('render Template (CUSTOM GET): ', file); 
 
-                    const template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname  });
+
+                    template = main.writeAuthFunction(template)
+
                     //write templates
-                    fs.writeFileSync(`./server/database/customApi/${file}`, template, err => {
+                    fs.writeFileSync(`./server/database/customApi/get/${file}`, template, err => {
                         if (err) {
-                            console.error(err);
+                            debug(err);
+                        }
+                    });
+                });
+            });
+        }
+
+        //generate tables für Custom POST
+        if ( fs.existsSync(`./server/custom/custom`) ) {
+            fs.readdir(`./server/custom/custom/post`, (err, files) => {
+                files.forEach(file => {
+
+                    const Template                = `./server/custom/custom/post/${file}`;
+                    debug('render Template (CUSTOM POST): ', file); 
+
+                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                    
+                    template = main.writeAuthFunction(template)
+
+                    //write templates
+                    fs.writeFileSync(`./server/database/customApi/post/${file}`, template, err => {
+                        if (err) {
+                            debug(err);
                         }
                     });
                 });

@@ -3,12 +3,16 @@ const debug         = require('debug')('app:server:app:system:auth');
 const bcrypt        = require('bcrypt');
 const _dirname      = process.cwd();
 const prod          = process.env.NODE_ENV !== 'production';
-const config        = require(_dirname + '/config.json');
+const config        = require(_dirname + '/config');
 const jwt           = require('jsonwebtoken');
-
-const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
-const user = new User()
-
+let user            = null;
+try{
+    const User = require( _dirname + '/server/database/MongoDB/dataApi/user.js');
+    user = new User()
+}
+catch(error) {
+    debug('Please create databasetable "user"');
+}
 module.exports = class Login {
     
     constructor(  ) {
@@ -16,10 +20,10 @@ module.exports = class Login {
     }
 
     async checkUser ( bodyParse ) { 
-        config.debug.extend && debug('checkUser params: ', ctx );
+        config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
             const { data: result } = await user.findOne(
-                { table: 'user', auth: true, query: { username: bodyParse.body.username }, actions: { auth: true } }
+                { noCheck: true, auth: true, query: { username: bodyParse.body.username }, actions: { login: true } }
             );
             
             if ( !result )
