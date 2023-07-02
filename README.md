@@ -49,6 +49,13 @@ Example
             "extend": false
         },
         "module": {
+            "defaultSignin":    true,
+            "defaultRegister":  true
+        }
+    }
+
+MongoDB: connect to database without credentials remove key 'database.credentials'
+=======
             "useSignin":    true,
             "useRegister":  false
         }
@@ -91,7 +98,6 @@ With this file you can create data endpoints
 after save from the tables.json MobAPI generate automatically a class with methodes (find, findOne, update, delete...).
 [See data api calls](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#data-api-calls)
 
-
 ### database init:
 
     "database": {
@@ -101,18 +107,9 @@ after save from the tables.json MobAPI generate automatically a class with metho
         "user": "root",
         "password": "",
         "name": "test"
-    },
-    "auth": {
-        "enabled": true,
-        "secret": "insertYourSecretHere",
-        "options": { 
-            "expiresIn": "24h" 
-        }
     }
 
 possible database are ['MongoDB']
-
-    "noDatabase": false init no database
 
 ## Structure
 ### server/database/selected database/mainTemplates.js 
@@ -176,9 +173,22 @@ Possible methodes in CUSTOMTEMPLATE
     
 ### items in Hook
 available item in Hook are:
+
+Data Hook
+
     - result:   result from the database
     - request:  request from the client see [params](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#parameter)
     - _dirname: root directory
+    - uuid:     uid npm module
+    - config:   config JSON from ./server
+    
+
+Custom Methode
+
+    - ctx:      ctx from Koa
+    - _dirname: root directory
+    - uuid:     uid npm module
+    - config:   config JSON from ./server
 
 ## DATA API Calls
 IMPORTANT: ALL  REQUEST TO THE ROUTE /DATA NEED A VALIDE AUTHTENTICATE FOR OPEN ROUTE PLEASE USE /CUSTOM [MORE DETAILS](https://github.com/lordrepha1980/MobAPI/blob/master/README.md#custom-api-calls).
