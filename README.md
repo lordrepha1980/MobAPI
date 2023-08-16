@@ -228,6 +228,7 @@ this is the API for `https://url/data/` request.
         auth, //only server
         noCheck, // only Server
         user //only server
+        login //only server
     }
     
 - table:                required (String) Databasetable, (Serverside: if is empty default table name is the api endpoint name )
@@ -242,6 +243,7 @@ this is the API for `https://url/data/` request.
 - noCheck:              (boolean) check permission ( only server parameter )
 - user:                 (Object) the user ( only server parameter )
 - ctx:                  complete request from Koa
+- login:                (boolean) send to user endpoint before login, you can remove the password for all other requests.
     
 ### Example:
     get first item from database with _id = '1'
