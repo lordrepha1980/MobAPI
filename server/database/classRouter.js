@@ -39,10 +39,8 @@ module.exports = class Secret {
     }
 
     async db () { 
-        try{
-            const connection = new Connection();
-            
-            const { db, client }    = await connection.init();     
+        try{            
+            const { db, client }    = await Connection.initNew();     
             return { db, client };
         } 
         catch (error) {

@@ -65,17 +65,9 @@ module.exports = class Data {
 
     async initDb ( ) {
         try {
-            
-            if (dbConnection && dbConnection.db)
-                return dbConnection
-               
-            if (dbConnection && !dbConnection.db && dbConnection.client)
-                dbConnection.client.close()
-
             const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
-            let connection          = new Connection();
-            
-            const { db, client }    = await connection.init();     
+
+            const { db, client }    = await Connection.init();     
             dbConnection = { db, client };
             return dbConnection
         } catch (error) {
@@ -208,10 +200,10 @@ module.exports = class Data {
 
             if ( Object.keys(request.query).length === 0 )
                 throw 'Query Empty'
-
-            const items = await db.collection(request.table).find(
+            //TODO toArray MobAPI
+            let items = await db.collection(request.table).find(
                 request.query
-            )
+            ).toArray()
 
             if (items && items.length > 0)
                 items = items.map( item => item._id )
