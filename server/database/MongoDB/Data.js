@@ -313,8 +313,6 @@ module.exports = class Data {
 
             config.debug.extend && debug('count params: ', request );
 
-            count.parse(request);
-
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'count')
                 if ( error )

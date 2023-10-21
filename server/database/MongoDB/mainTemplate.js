@@ -258,6 +258,51 @@ class {{ table }} extends Data {
         }
     {% endblock %}
 
+    {% block methodeCount %}
+        async count( request ) {
+            try {
+                if ( request && !request.table )
+                    request.table = defaultCollection
+
+                {% block countBefore %}{% endblock %}
+                if ( globalHooks.deleteManyBefore )
+                    await globalHooks.countBefore( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx
+                    } )
+
+                const result = await super.count( request )
+
+                {% block countAfter %}{% endblock %}
+                if ( globalHooks.countAfter )
+                    await globalHooks.countAfter( { 
+                        io: request.io, 
+                        body: request.body, 
+                        auth: request.auth, 
+                        actions: request.actions,
+                        user: request.ctx?.user,
+                        noCheck: request.noCheck, 
+                        table: request.table,
+                        query: request.query,
+                        ctx: request.ctx,
+                        result
+                    } )
+                return result
+            }
+            catch (error) { 
+                debug(error)
+                return { error } 
+            }
+        }
+    {% endblock %}
+
 }
 
 module.exports = {{ table }};
