@@ -81,7 +81,8 @@ const main = {
             //clear data API
             fs.rmSync(`./server/database/${dbType}/dataApi`, { recursive: true, force: true });
             //clear custom API
-            fs.rmSync(`./server/database/customApi`, { recursive: true, force: true });
+            fs.rmSync(`./server/database/customApi/get`, { recursive: true, force: true });
+            fs.rmSync(`./server/database/customApi/post`, { recursive: true, force: true });
 
         } catch ( error ) {
             debug('Error: clear Old Structure', error)
@@ -114,60 +115,44 @@ const main = {
             if ( fs.existsSync(`./server/custom/data/${key}.js`) )
                 Template                = `./server/custom/data/${key}.js`;
 
-            debug('render Template (DATA): ', key); 
             const template              = Nunjucks.render(Template, { table: key, collection: key,  database: dbType, _dirname });
 
             //write templates
-            fs.writeFileSync(`./server/database/${dbType}/dataApi/${key}.js`, template, err => {
-                if (err) 
-                    reject(err);
-                resolve()
-            });
-          
+            await fsPromise.writeFile(`./server/database/${dbType}/dataApi/${key}.js`, template);
+            debug('render Template (DATA): ', key); 
         }
 
         //generate tables für Custom GET
         if ( fs.existsSync(`./server/custom/custom`) ) {
-            fs.readdir(`./server/custom/custom/get`, (err, files) => {
-                files.forEach(file => {
+            const files = await fsPromise.readdir(`./server/custom/custom/get`);
+            for (let file of files) {
 
-                    const Template                = `./server/custom/custom/get/${file}`;
-                    debug('render Template (CUSTOM GET): ', file); 
+                const Template                = `./server/custom/custom/get/${file}`;
 
-                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname  });
+                let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname  });
 
-                    template = main.writeAuthFunction(template)
+                template = main.writeAuthFunction(template)
 
-                    //write templates
-                    fs.writeFileSync(`./server/database/customApi/get/${file}`, template, err => {
-                        if (err) {
-                            debug(err);
-                        }
-                    });
-                });
-            });
+                //write templates
+                await fsPromise.writeFile(`./server/database/customApi/get/${file}`, template);
+                debug('render Template (CUSTOM GET): ', file); 
+            };
         }
 
         //generate tables für Custom POST
         if ( fs.existsSync(`./server/custom/custom`) ) {
-            fs.readdir(`./server/custom/custom/post`, (err, files) => {
-                files.forEach(file => {
+            const files = await fsPromise.readdir(`./server/custom/custom/post`);
+            
+            for ( const file of files) {
+                const Template                = `./server/custom/custom/post/${file}`; 
+                let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
+                
+                template = main.writeAuthFunction(template)
 
-                    const Template                = `./server/custom/custom/post/${file}`;
-                    debug('render Template (CUSTOM POST): ', file); 
-
-                    let template              = Nunjucks.render(Template, { function: file.replace('.js', ''), _dirname });
-                    
-                    template = main.writeAuthFunction(template)
-
-                    //write templates
-                    fs.writeFileSync(`./server/database/customApi/post/${file}`, template, err => {
-                        if (err) {
-                            debug(err);
-                        }
-                    });
-                });
-            });
+                //write templates
+                await fsPromise.writeFile(`./server/database/customApi/post/${file}`, template);
+                debug('render Template (CUSTOM POST): ', file);
+            };
         }
     }
 }
