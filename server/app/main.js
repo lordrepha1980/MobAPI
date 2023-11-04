@@ -74,6 +74,19 @@ const main = {
             return loaded_module.exports;
           }, undefined);
     },
+    clearOldStructure: async () => { 
+        debug('clear Old Structure: ');
+        
+        try {
+            //clear data API
+            fs.rmSync(`./server/database/${dbType}/dataApi`, { recursive: true, force: true });
+            //clear custom API
+            fs.rmSync(`./server/database/customApi`, { recursive: true, force: true });
+
+        } catch ( error ) {
+            debug('Error: clear Old Structure', error)
+        }
+    },
     checkStructure: async () =>{ 
         debug('check Structure: ');
 

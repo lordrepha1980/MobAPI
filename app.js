@@ -80,6 +80,7 @@ router.use( '/', async ( ctx, next ) => {
 
 const main   = require(_dirname + '/server/app/main');
 
+await main.clearOldStructure();
 await main.checkStructure();
 await main.generateTables();
 

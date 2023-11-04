@@ -12,7 +12,8 @@ try{
     user = new User()
 }
 catch(error) {
-    debug('register error:', error)
+    if ( config.module.useRegister )
+        debug('Please create databasetable "user" or disable "useRegister" in config.js');
 }
 
 module.exports = class Register {
@@ -25,6 +26,9 @@ module.exports = class Register {
 
         config.debug.extend && debug('register params: ', body );
         try {
+            if ( !user )
+                throw ("User does not exist");
+
             const {data: userExists} = await user.findOne({ ctx, noCheck: true, query: { username: body.body.username }, auth: true, actions: { register: true, auth: true } });
 
             if ( userExists )

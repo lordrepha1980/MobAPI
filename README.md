@@ -485,5 +485,14 @@ schema rights
         ]
     }
 
+# Migration Guide to v1.12.0
+mobapi.config.json
+replace `ignore_watch`
 
+    ignore_watch: [
+        "server/database/MongoDB/dataApi",
+        "server/database/customApi/get",
+        "server/database/customApi/post",
+        "node_modules"
+    ]
 
