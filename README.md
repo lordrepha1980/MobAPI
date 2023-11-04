@@ -493,6 +493,7 @@ replace `ignore_watch`
         "server/database/MongoDB/dataApi",
         "server/database/customApi/get",
         "server/database/customApi/post",
+        "server/database/customApi",
         "node_modules"
     ]
 
