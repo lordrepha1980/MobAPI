@@ -11,7 +11,8 @@ try{
     user = new User()
 }
 catch(error) {
-    debug('Please create databasetable "user"');
+    if ( config.module.useRights )
+        debug('Please create databasetable "user" or disable "useRights" in config.js');
 }
 module.exports = class Login {
     
@@ -22,6 +23,9 @@ module.exports = class Login {
     async checkUser ( bodyParse ) { 
         config.debug.extend && debug('checkUser params: ', bodyParse );
         try{
+            if ( !user )
+                throw ("User does not exist");
+
             const { data: result } = await user.findOne(
                 { noCheck: true, auth: true, query: { username: bodyParse.body.username }, actions: { login: true }, login: true }
             );

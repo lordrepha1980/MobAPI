@@ -13,6 +13,8 @@ const rights        = new Rights();
 const sentry        = require(_dirname + '/server/database/sentry.js');
 const Sentry        = new sentry();
 
+const Connection    = require( _dirname + '/server/database/MongoDB/Connection.js');
+
 let dbConnection = null;
 
 const update = z.object({
@@ -65,8 +67,6 @@ module.exports = class Data {
 
     async initDb ( ) {
         try {
-            const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
-
             const { db, client }    = await Connection.init();     
             dbConnection = { db, client };
             return dbConnection
