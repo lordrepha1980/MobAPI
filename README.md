@@ -485,7 +485,7 @@ schema rights
         ]
     }
 
-# Migration Guide to v1.12.0
+# Migration Guide to v1.12.1
 mobapi.config.json
 replace `ignore_watch`
 
