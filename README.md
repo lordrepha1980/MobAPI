@@ -53,7 +53,11 @@ Example
             "defaultRegister":  true,
             "useSignin":    true,
             "useRegister":  false
-        }
+        },
+        "authRoutes": [
+            "/auth/signin",
+            "/auth/register",
+        ]
     }
 
 MongoDB: connect to database without credentials remove key 'database.credentials'
@@ -65,6 +69,7 @@ MongoDB: connect to database without credentials remove key 'database.credential
 - bcrypt - definition for standart methode encrypt a password
 - debug - enable extend log output
 - module - enable standard modules
+- authRoutes - register all public routes
 - sentryDSN - sentry.io dsn
 - sentryOptions: Object for sentry.io options,
 

@@ -42,7 +42,7 @@ module.exports = class Login {
 
             if ( result ) {
                 delete result.password
-                token = jwt.sign(result, config.auth.secret, config.auth.options);
+                token = jwt.sign({_id: result._id}, config.auth.secret, config.auth.options);
             }
                 
             return token;
