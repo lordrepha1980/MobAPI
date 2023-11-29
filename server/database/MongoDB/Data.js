@@ -13,8 +13,6 @@ const rights        = new Rights();
 const sentry        = require(_dirname + '/server/database/sentry.js');
 const Sentry        = new sentry();
 
-const Connection    = require( _dirname + '/server/database/MongoDB/Connection.js');
-
 let dbConnection = null;
 
 const update = z.object({
@@ -67,7 +65,17 @@ module.exports = class Data {
 
     async initDb ( ) {
         try {
-            const { db, client }    = await Connection.init();     
+            
+            if (dbConnection && dbConnection.db)
+                return dbConnection
+               
+            if (dbConnection && !dbConnection.db && dbConnection.client)
+                dbConnection.client.close()
+
+            const Connection        = require( _dirname + '/server/database/MongoDB/Connection.js');
+            let connection          = new Connection();
+            
+            const { db, client }    = await connection.init();     
             dbConnection = { db, client };
             return dbConnection
         } catch (error) {
@@ -200,10 +208,10 @@ module.exports = class Data {
 
             if ( Object.keys(request.query).length === 0 )
                 throw 'Query Empty'
-            //TODO toArray MobAPI
-            let items = await db.collection(request.table).find(
+
+            const items = await db.collection(request.table).find(
                 request.query
-            ).toArray()
+            )
 
             if (items && items.length > 0)
                 items = items.map( item => item._id )
@@ -273,6 +281,8 @@ module.exports = class Data {
 
             config.debug.extend && debug('find params: ', request );
 
+            find.parse(request)
+
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'find')
                 if ( error )
@@ -312,6 +322,8 @@ module.exports = class Data {
             Sentry.addBreadcrumb({message: JSON.stringify({ query: request.query }), category: 'count'})
 
             config.debug.extend && debug('count params: ', request );
+
+            count.parse(request);
 
             if ( config.module.useRights && !request.noCheck ) {
                 const { error } = await rights.check(request, 'count')

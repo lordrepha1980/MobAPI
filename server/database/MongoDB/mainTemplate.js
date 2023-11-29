@@ -33,6 +33,21 @@ class {{ table }} extends Data {
                 if ( request && !request.table )
                     request.table = defaultCollection
 
+                function sanitize( body ) {
+                    if (body instanceof Object) {
+                        for (let key in body) {
+                            if (/^\$/.test(key)) {
+                                delete body[key];
+                            } else {
+                                sanitize(body[key]);
+                            }
+                        }
+                    }
+                    return body;
+                };
+    
+                request.body = sanitize(request.body)
+
                 {% block updateBefore %}{% endblock %}
                 if ( globalHooks.updateBefore )
                     await globalHooks.updateBefore( { 

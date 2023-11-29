@@ -3,18 +3,19 @@ const _dirname  = process.cwd()
 const config    = require( _dirname + "/config")
 const debug     = require('debug')('app:server:database:MongoDB:connection')
 let DB          = null
+let Client      = null
 
 module.exports = {
     init,
     initNew
 }
-async function  init (newDb) { 
+async function  init () { 
     try {
-        if (DB && DB.db && !newDb)
-            return DB
+        if (DB)
+            return { db: DB,  client: { close: () => { console.log('MongoDB: client is debrecated' ) } } }
         
-        if (DB && !DB.db && DB.client)
-            DB.client.close()
+        if (!DB && Client)
+            Client.close()
 
         const { MongoClient }   = require('mongodb');
         const ReadPref          = require('mongodb').ReadPreference;
@@ -33,7 +34,7 @@ async function  init (newDb) {
 
         config.debug.extend && debug('MongoDB Connect: ', url );
 
-        const client            = new MongoClient(
+        Client            = new MongoClient(
             url,
             {
                 readPreference:     ReadPref.NEAREST,
@@ -44,13 +45,11 @@ async function  init (newDb) {
         // Database Name
         const dbName            = config.database.name || 'defaultDb';
 
-        await client.connect();
-        const db                = client.db(dbName);
-        if (!newDb) {
-            DB = { db, client }
-            return DB
-        } else
-            return { db, client }
+        await Client.connect();
+        const db                = Client.db(dbName);
+
+        DB = db
+        return { db: DB, client: { close: () => {console.log('MongoDB: client is debrecated' ) } } };
     } catch (error) {
         debug(error)
         throw error ;
@@ -58,5 +57,5 @@ async function  init (newDb) {
 }
 
 async function  initNew () { 
-    return this.init(true)
+    return this.init()
 }
